@@ -1,0 +1,94 @@
+# Xcode
+.DS_Store
+*/xcuserdata
+*.xccheckout
+*.moved-aside
+*.xcuserstate
+*.xcscmblueprint
+*.xcscheme
+xcuserdata/
+
+# Build
+build/
+DerivedData/
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+# CocoaPods
+Pods/
+!Podfile
+!Podfile.lock
+
+# Swift Package Manager
+.swiftpm
+.xcode
+/*.xcodeproj
+**/xcshareddata/WorkspaceSettings.xcsettings
+
+# App Specific
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Local Development
+.env
+.env.local
+secrets.*
+
+# System Files
+*.swp
+*.swo
+*~
+Thumbs.db
+
+# Dependency Cache
+Carthage/
+~/.nuget/
+
+# Analytics
+analytics.log
+
+# Linting
+.swiftlint.yml
+
+# Backup Files
+*.backup
+*.bak
+
+# User Interface State
+*.suo
+
+# Logs
+*.log
+npm-debug.log*
+
+# Ruby
+.bundle
+vendor/bundle
+
+# Android
+*.keystore
+*.jks
+
+# IntelliJ
+.idea/
+*.iml
+
+# Visual Studio Code
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
