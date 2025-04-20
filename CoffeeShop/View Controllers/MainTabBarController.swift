@@ -24,12 +24,13 @@ class MainTabBarController: UITabBarController {
         }
         tabBar.tintColor = Colors().colorRed
         tabBar.unselectedItemTintColor = Colors().colorRed
+        self.delegate = self
     }
     
     private func setupViewControllers() {
         let home = createNavController(rootViewController: HomeViewController(), title: "Home", imageName: "house")
         let cart = createNavController(rootViewController: RedViewController(title: "Sepet"), title: "Sepet", imageName: "cart")
-        let products = createNavController(rootViewController: RedViewController(title: "Ürün Listesi"), title: "Ürünler", imageName: "list.bullet")
+        let products = createNavController(rootViewController: ProductListViewController(), title: "Ürünler", imageName: "list.bullet")
         
         let profileVC = makeProfileOrLoginViewController()
         
@@ -39,10 +40,10 @@ class MainTabBarController: UITabBarController {
         } else {
             profileNav = createNavController(rootViewController: profileVC, title: "Profil", imageName: "person")
         }
-
+        
         viewControllers = [home, cart, products, profileNav]
     }
-
+    
     private func createNavController(rootViewController: UIViewController, title: String, imageName: String) -> UINavigationController {
         let navController = UINavigationController(rootViewController: rootViewController)
         navController.isNavigationBarHidden = true
@@ -52,7 +53,7 @@ class MainTabBarController: UITabBarController {
     
     private func makeProfileOrLoginViewController() -> UIViewController {
         let profileViewModel = ProfileViewModel()
-
+        
         if profileViewModel.isLoggedIn {
             let profileVC = ProfileViewController(viewModel: profileViewModel)
             profileVC.tabBarItem = UITabBarItem(title: "Profil", image: UIImage(systemName: "person"), tag: 3)
@@ -62,7 +63,7 @@ class MainTabBarController: UITabBarController {
             loginVC.onLoginSuccess = { [weak self] in
                 self?.refreshProfileTab()
             }
-
+            
             let loginNav = UINavigationController(rootViewController: loginVC)
             loginNav.isNavigationBarHidden = true
             loginNav.tabBarItem = UITabBarItem(title: "Profil", image: UIImage(systemName: "person"), tag: 3)
@@ -75,10 +76,23 @@ class MainTabBarController: UITabBarController {
               let navController = viewControllers.last as? UINavigationController else {
             return
         }
-
+        
         let profileViewModel = ProfileViewModel()
         let profileVC = ProfileViewController(viewModel: profileViewModel)
         navController.setViewControllers([profileVC], animated: true)
         self.selectedIndex = 0
+    }
+}
+
+extension MainTabBarController: UITabBarControllerDelegate {
+    func tabBarController(_ tabBarController: UITabBarController,
+                          shouldSelect viewController: UIViewController) -> Bool {
+        UIView.setAnimationsEnabled(false)
+        return true
+    }
+    
+    func tabBarController(_ tabBarController: UITabBarController,
+                          didSelect viewController: UIViewController) {
+        UIView.setAnimationsEnabled(true)
     }
 }

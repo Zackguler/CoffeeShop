@@ -13,7 +13,7 @@ final class ProductCell: UICollectionViewCell {
     let imageView = UIImageView()
     let titleLabel = UILabel()
     private let priceButton = CustomButton(action: {})
-    private let favoriteButton = UIButton(type: .system)
+    let favoriteButton = UIButton(type: .system)
 
     var onFavoriteTapped: (() -> Void)?
 

@@ -37,14 +37,8 @@ final class HomeViewController: UIViewController {
         if viewModel.isUserLoggedIn && !stackView.arrangedSubviews.contains(favoriteProductView) {
             stackView.addArrangedSubview(favoriteProductView)
         }
-
-        if viewModel.isUserLoggedIn {
-            viewModel.fetchFavorites { [weak self] favorites in
-                DispatchQueue.main.async {
-                    self?.favoriteProductView.update(with: favorites)
-                }
-            }
-        }
+        refreshFavorites()
+        fetchData()
     }
 
     override func viewDidLoad() {
@@ -52,7 +46,7 @@ final class HomeViewController: UIViewController {
         view.backgroundColor = Colors().colorWhite
         setupFavoritesSection()
         setupUI()
-        fetchData()
+        NotificationCenter.default.addObserver(self, selector: #selector(refreshFavorites), name: .favoritesUpdated, object: nil)
     }
 
     private func setupUI() {
@@ -134,14 +128,41 @@ final class HomeViewController: UIViewController {
 
             return cell
         }
+
+        favoriteProductView.onItemSelected = { [weak self] favoriteItem in
+            guard let self = self else { return }
+            let product = CoffeeShopItems(
+                id: favoriteItem.productId,
+                title: favoriteItem.title,
+                type: favoriteItem.type,
+                imageURL: favoriteItem.imageURL,
+                price: favoriteItem.price,
+                description: favoriteItem.description
+            )
+            let detailViewModel = ProductDetailViewModel(product: product)
+            let detailVC = ProductDetailViewController(viewModel: detailViewModel)
+            self.navigationController?.pushViewController(detailVC, animated: true)
+        }
     }
+
     
-    private func refreshFavorites() {
+    @objc private func refreshFavorites() {
         guard viewModel.isUserLoggedIn else { return }
         
         viewModel.fetchFavorites { [weak self] favorites in
             DispatchQueue.main.async {
                 self?.favoriteProductView.update(with: favorites)
+                self?.refreshCategorySections()
+            }
+        }
+    }
+    
+    private func refreshCategorySections() {
+        viewModel.fetchCategories { [weak self] categories in
+            DispatchQueue.main.async {
+                self?.hotCategoryView.update(with: categories.filter { $0.type == "hot" })
+                self?.coldCategoryView.update(with: categories.filter { $0.type == "cold" })
+                self?.foodCategoryView.update(with: categories.filter { $0.type == "food" })
             }
         }
     }
@@ -191,7 +212,7 @@ struct CategorySectionFactory {
                 } else {
                     viewModel.toggleFavorite(item) { result in
                         switch result {
-                        case .success(let added):
+                        case .success(_):
                             DispatchQueue.main.async {
                                 collectionView.reloadItems(at: [indexPath])
                             }
@@ -207,7 +228,7 @@ struct CategorySectionFactory {
                 } else {
                     viewModel.toggleFavorite(item) { result in
                         switch result {
-                        case .success(let added):
+                        case .success(_):
                             DispatchQueue.main.async {
                                 collectionView.reloadItems(at: [indexPath])
                                 onFavoriteToggled?()
