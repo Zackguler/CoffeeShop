@@ -48,21 +48,21 @@ final class RegisterViewController: UIViewController {
     
     private lazy var firstNameTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.placeholder = "Ad"
+        textField.setPlaceholder("Ad")
         textField.textColor = Colors().colorDarkGray
         return textField
     }()
     
     private lazy var lastNameTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.placeholder = "Soyad"
+        textField.setPlaceholder("Soyad")
         textField.textColor = Colors().colorDarkGray
         return textField
     }()
     
     private lazy var emailTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.placeholder = "E-Posta"
+        textField.setPlaceholder("E-Posta")
         textField.keyboardType = .emailAddress
         textField.textColor = Colors().colorDarkGray
         textField.autocorrectionType = .no
@@ -72,7 +72,7 @@ final class RegisterViewController: UIViewController {
     
     private lazy var passwordTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.placeholder = "Şifre"
+        textField.setPlaceholder("Şifre")
         textField.textColor = Colors().colorDarkGray
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none

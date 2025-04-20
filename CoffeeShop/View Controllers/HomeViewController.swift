@@ -1,0 +1,217 @@
+//
+//  HomeViewController.swift
+//  CoffeeShop
+//
+//  Created by Semih Güler on 20.04.2025.
+//
+
+import UIKit
+import SnapKit
+
+final class HomeViewController: UIViewController {
+
+    private let viewModel: HomeViewModelProtocol
+    private let scrollView = UIScrollView()
+    private let stackView = UIStackView()
+
+    private let campaignSliderView = CampaignsSliderView()
+
+    private lazy var hotCategoryView = makeCategorySectionView(with: "Sıcak İçecekler")
+    private lazy var coldCategoryView = makeCategorySectionView(with: "Soğuk İçecekler")
+    private lazy var foodCategoryView = makeCategorySectionView(with: "Yiyecekler")
+    
+    private var favoriteProductView: TitledCollectionView<Favorite, ProductCell>!
+
+    init(viewModel: HomeViewModelProtocol = HomeViewModel()) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if viewModel.isUserLoggedIn && !stackView.arrangedSubviews.contains(favoriteProductView) {
+            stackView.addArrangedSubview(favoriteProductView)
+        }
+
+        if viewModel.isUserLoggedIn {
+            viewModel.fetchFavorites { [weak self] favorites in
+                DispatchQueue.main.async {
+                    self?.favoriteProductView.update(with: favorites)
+                }
+            }
+        }
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = Colors().colorWhite
+        setupFavoritesSection()
+        setupUI()
+        fetchData()
+    }
+
+    private func setupUI() {
+        view.addSubview(scrollView)
+        scrollView.addSubview(stackView)
+
+        scrollView.snp.makeConstraints { $0.edges.equalToSuperview() }
+
+        stackView.axis = .vertical
+        stackView.spacing = 32
+        stackView.snp.makeConstraints { make in
+            make.edges.equalToSuperview().inset(16)
+            make.width.equalTo(scrollView.snp.width).offset(-32)
+        }
+
+        stackView.addArrangedSubview(campaignSliderView)
+        campaignSliderView.snp.makeConstraints { $0.height.equalTo(230) }
+        stackView.addArrangedSubview(hotCategoryView)
+        stackView.addArrangedSubview(coldCategoryView)
+        stackView.addArrangedSubview(foodCategoryView)
+
+        if viewModel.isUserLoggedIn {
+            stackView.addArrangedSubview(favoriteProductView)
+        }
+    }
+
+    private func fetchData() {
+        viewModel.fetchCampaigns { [weak self] campaigns in
+            DispatchQueue.main.async {
+                self?.campaignSliderView.update(with: campaigns)
+            }
+        }
+
+        viewModel.fetchCategories { [weak self] categories in
+            DispatchQueue.main.async {
+                self?.hotCategoryView.update(with: categories.filter { $0.type == "hot" })
+                self?.coldCategoryView.update(with: categories.filter { $0.type == "cold" })
+                self?.foodCategoryView.update(with: categories.filter { $0.type == "food" })
+            }
+        }
+
+        if viewModel.isUserLoggedIn {
+            viewModel.fetchFavorites { [weak self] favorites in
+                DispatchQueue.main.async {
+                    self?.favoriteProductView.update(with: favorites)
+                }
+            }
+        }
+    }
+    
+    private func setupFavoritesSection() {
+        favoriteProductView = TitledCollectionView<Favorite, ProductCell>(
+            title: "Favori Ürünler",
+            cellType: ProductCell.self
+        ) { [weak self] collectionView, indexPath, item in
+            guard let self = self else { return ProductCell() }
+
+            let cell = collectionView.dequeueReusableCell(
+                withReuseIdentifier: String(describing: ProductCell.self),
+                for: indexPath
+            ) as! ProductCell
+
+            cell.configure(with: item)
+
+            cell.onFavoriteTapped = {
+                self.viewModel.removeFromFavorites(productId: item.productId) { result in
+                    switch result {
+                    case .success:
+                        self.viewModel.fetchFavorites { updatedFavorites in
+                            DispatchQueue.main.async {
+                                self.favoriteProductView.update(with: updatedFavorites)
+                            }
+                        }
+                    case .failure(let error):
+                        print("Favoriden çıkarma hatası: \(error.localizedDescription)")
+                    }
+                }
+            }
+
+            return cell
+        }
+    }
+    
+    private func refreshFavorites() {
+        guard viewModel.isUserLoggedIn else { return }
+        
+        viewModel.fetchFavorites { [weak self] favorites in
+            DispatchQueue.main.async {
+                self?.favoriteProductView.update(with: favorites)
+            }
+        }
+    }
+    
+    private func makeCategorySectionView(with title: String) -> TitledCollectionView<CoffeeShopItems, ProductCell> {
+        return CategorySectionFactory.makeCategorySection(
+            title: title,
+            items: [],
+            viewModel: viewModel,
+            onLoginRequired: { [weak self] in
+                self?.showAlert(title: "Giriş Gerekli", message: "Favorilere eklemek için giriş yapmalısınız.")
+            },
+            onFavoriteToggled: { [weak self] in
+                self?.refreshFavorites()
+            }
+        )
+    }
+}
+
+struct CategorySectionFactory {
+    static func makeCategorySection(
+        title: String,
+        items: [CoffeeShopItems],
+        viewModel: HomeViewModelProtocol,
+        onLoginRequired: @escaping () -> Void,
+        onFavoriteToggled: (() -> Void)? = nil
+    ) -> TitledCollectionView<CoffeeShopItems, ProductCell> {
+
+        return TitledCollectionView<CoffeeShopItems, ProductCell>(
+            title: title,
+            cellType: ProductCell.self
+        ) { collectionView, indexPath, item in
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: String(describing: ProductCell.self), for: indexPath) as! ProductCell
+            let isFavorite = viewModel.isProductFavorited(item)
+            cell.configure(with: item, isFavorite: isFavorite)
+            cell.onFavoriteTapped = {
+                if !viewModel.isUserLoggedIn {
+                    onLoginRequired()
+                } else {
+                    viewModel.toggleFavorite(item) { result in
+                        switch result {
+                        case .success(let added):
+                            DispatchQueue.main.async {
+                                collectionView.reloadItems(at: [indexPath])
+                            }
+                        case .failure(let error):
+                            print("Hata: \(error.localizedDescription)")
+                        }
+                    }
+                }
+            }
+            cell.onFavoriteTapped = {
+                if !viewModel.isUserLoggedIn {
+                    onLoginRequired()
+                } else {
+                    viewModel.toggleFavorite(item) { result in
+                        switch result {
+                        case .success(let added):
+                            DispatchQueue.main.async {
+                                collectionView.reloadItems(at: [indexPath])
+                                onFavoriteToggled?()
+                            }
+                        case .failure(let error):
+                            print("Hata:", error.localizedDescription)
+                        }
+                    }
+                }
+            }
+            return cell
+        }
+    }
+}
+

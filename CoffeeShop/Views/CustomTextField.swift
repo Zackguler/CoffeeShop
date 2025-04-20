@@ -46,4 +46,14 @@ final class CustomTextField: UITextField {
     private func setTextColor() {
         self.textColor = colorr
     }
+    
+    func setPlaceholder(_ text: String, color: UIColor = Colors().colorBorderLight) {
+        self.attributedPlaceholder = NSAttributedString(
+            string: text,
+            attributes: [
+                .foregroundColor: color,
+                .font: fontt
+            ]
+        )
+    }
 }

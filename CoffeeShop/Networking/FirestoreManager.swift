@@ -48,4 +48,44 @@ final class FirestoreManager {
     func deleteUser(userId: String, completion: @escaping (Error?) -> Void) {
         db.collection("users").document(userId).delete(completion: completion)
     }
+    
+    func getCategories(completion: @escaping (Result<[CoffeeShopItems], Error>) -> Void) {
+        db.collection("categories").getDocuments { snapshot, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+            
+            guard let documents = snapshot?.documents else {
+                completion(.failure(NSError(domain: "Firestore", code: -1, userInfo: [NSLocalizedDescriptionKey: "Veri yok"])))
+                return
+            }
+
+            let categories: [CoffeeShopItems] = documents.compactMap { document in
+                do {
+                    let jsonData = try JSONSerialization.data(withJSONObject: document.data(), options: [])
+                    let decoded = try JSONDecoder().decode(CoffeeShopItems.self, from: jsonData)
+                    return decoded
+                } catch {
+                    return nil
+                }
+            }
+
+            completion(.success(categories))
+        }
+    }
+    
+    func addToFavorites(product: CoffeeShopItems, userId: String, completion: @escaping (Error?) -> Void) {
+        let data: [String: Any] = [
+            "product_id": product.id,
+            "title": product.title,
+            "price": product.price,
+            "image_url": product.imageURL,
+            "type": product.type,
+            "description": product.description,
+            "added_at": FieldValue.serverTimestamp()
+        ]
+        
+        db.collection("users").document(userId).collection("favorites").document(product.id).setData(data, completion: completion)
+    }
 }
