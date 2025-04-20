@@ -147,7 +147,7 @@ final class HomeViewController: UIViewController {
     }
     
     private func makeCategorySectionView(with title: String) -> TitledCollectionView<CoffeeShopItems, ProductCell> {
-        return CategorySectionFactory.makeCategorySection(
+        let section = CategorySectionFactory.makeCategorySection(
             title: title,
             items: [],
             viewModel: viewModel,
@@ -158,6 +158,14 @@ final class HomeViewController: UIViewController {
                 self?.refreshFavorites()
             }
         )
+        section.onItemSelected = { [weak self] product in
+            guard let self = self else { return }
+            let viewModel = ProductDetailViewModel(product: product)
+            let vc = ProductDetailViewController(viewModel: viewModel)
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+
+        return section
     }
 }
 
