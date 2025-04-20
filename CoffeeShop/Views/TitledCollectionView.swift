@@ -8,11 +8,12 @@
 import UIKit
 import SnapKit
 
-final class TitledCollectionView<ItemType, Cell: UICollectionViewCell>: UIView, UICollectionViewDataSource {
+final class TitledCollectionView<ItemType, Cell: UICollectionViewCell>: UIView, UICollectionViewDataSource, UICollectionViewDelegate {
     
     private let titleLabel = UILabel()
     private var items: [ItemType] = []
     private let cellProvider: (UICollectionView, IndexPath, ItemType) -> Cell
+    var onItemSelected: ((ItemType) -> Void)?
     
     private let emptyLabel: UILabel = {
         let label = UILabel()
@@ -35,6 +36,7 @@ final class TitledCollectionView<ItemType, Cell: UICollectionViewCell>: UIView, 
         collectionView.backgroundColor = .clear
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.dataSource = self
+        collectionView.delegate = self
         return collectionView
     }()
 
@@ -78,6 +80,11 @@ final class TitledCollectionView<ItemType, Cell: UICollectionViewCell>: UIView, 
         emptyLabel.snp.makeConstraints { make in
             make.edges.equalTo(collectionView).inset(16)
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedItem = items[indexPath.item]
+        onItemSelected?(selectedItem)
     }
 
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
