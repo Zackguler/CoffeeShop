@@ -1,0 +1,143 @@
+//
+//  ProfileViewController.swift
+//  CoffeeShop
+//
+//  Created by Semih Güler on 20.04.2025.
+//
+
+import UIKit
+import SnapKit
+import FirebaseAuth
+
+final class ProfileViewController: UIViewController {
+    
+    private let viewModel: ProfileViewModelProtocol
+    
+    private let nameLabel: UILabel = {
+        let label = UILabel()
+        label.font = .fontBold22
+        label.textColor = Colors().colorDarkGray
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private let emailLabel: UILabel = {
+        let label = UILabel()
+        label.font = .fontRegular16
+        label.textColor = Colors().colorDarkGray
+        label.textAlignment = .center
+        return label
+    }()
+    
+    private lazy var logoutButton: CustomButton = {
+        let button = CustomButton {
+            self.logoutTapped()
+        }
+        button.setTitle("Çıkış Yap", for: .normal)
+        return button
+    }()
+    
+    private lazy var deleteAccountButton: CustomButton = {
+        let button = CustomButton {
+            self.deleteAccountTapped()
+        }
+        button.setTitle("Hesabı Sil", for: .normal)
+        button.backgroundColor = Colors().colorRed
+        return button
+    }()
+    
+    private let stackView: UIStackView = {
+        let stack = UIStackView()
+        stack.axis = .vertical
+        stack.spacing = 16
+        stack.alignment = .center
+        return stack
+    }()
+    
+    init(viewModel: ProfileViewModelProtocol) {
+        self.viewModel = viewModel
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = Colors().colorWhite
+        title = "Profil"
+        setupUI()
+        loadUserInfo()
+    }
+    
+    private func setupUI() {
+        view.addSubview(stackView)
+        stackView.addArrangedSubview(nameLabel)
+        stackView.addArrangedSubview(emailLabel)
+        stackView.addArrangedSubview(logoutButton)
+        stackView.addArrangedSubview(deleteAccountButton)
+        
+        stackView.snp.makeConstraints { make in
+            make.center.equalToSuperview()
+            make.left.right.equalToSuperview().inset(32)
+        }
+        
+        logoutButton.snp.makeConstraints { make in
+            make.height.equalTo(44)
+            make.width.equalToSuperview()
+        }
+        
+        deleteAccountButton.snp.makeConstraints { make in
+            make.height.equalTo(44)
+            make.width.equalToSuperview()
+        }
+    }
+    
+    private func loadUserInfo() {
+        viewModel.fetchUser { [weak self] user in
+            DispatchQueue.main.async {
+                self?.nameLabel.text = "\(user.firstName) \(user.lastName)"
+                self?.emailLabel.text = user.email
+            }
+        }
+    }
+    
+    private func logoutTapped() {
+        viewModel.logout { [weak self] error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    self?.showAlert(title: "Hata", message: error.localizedDescription)
+                } else {
+                    self?.goToLogin()
+                }
+            }
+        }
+    }
+    
+    private func deleteAccountTapped() {
+        let alert = UIAlertController(title: "Hesabı Sil", message: "Hesabınızı silmek istediğinize emin misiniz?", preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "Vazgeç", style: .cancel))
+        alert.addAction(UIAlertAction(title: "Evet", style: .destructive, handler: { _ in
+            self.viewModel.deleteAccount { [weak self] error in
+                DispatchQueue.main.async {
+                    if let error = error {
+                        self?.showAlert(title: "Hata", message: error.localizedDescription)
+                    } else {
+                        self?.goToLogin()
+                    }
+                }
+            }
+        }))
+        present(alert, animated: true)
+    }
+    
+    private func goToLogin() {
+        guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
+              let window = windowScene.windows.first else { return }
+
+        let tabBarController = MainTabBarController()
+        window.rootViewController = tabBarController
+        window.makeKeyAndVisible()
+    }
+}
