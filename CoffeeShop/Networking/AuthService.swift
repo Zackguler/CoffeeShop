@@ -10,8 +10,8 @@ import FirebaseAuth
 protocol AuthServiceProtocol {
     func login(email: String, password: String, completion: @escaping (Result<Void, Error>) -> Void)
     func register(email: String,
-                 password: String,
-                 completion: @escaping (Result<AuthDataResult, Error>) -> Void)
+                  password: String,
+                  completion: @escaping (Result<AuthDataResult, Error>) -> Void)
     func logout(completion: @escaping (Result<Void, Error>) -> Void)
     func deleteAccount(completion: @escaping (Result<Void, Error>) -> Void)
 }
@@ -27,21 +27,21 @@ final class AuthService: AuthServiceProtocol {
             }
         }
     }
-
+    
     func register(email: String,
-                     password: String,
-                     completion: @escaping (Result<AuthDataResult, Error>) -> Void) {
-            Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
-                if let error = error {
-                    completion(.failure(error))
-                } else if let authResult = authResult {
-                    completion(.success(authResult))
-                } else {
-                    completion(.failure(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Bilinmeyen hata"])))
-                }
+                  password: String,
+                  completion: @escaping (Result<AuthDataResult, Error>) -> Void) {
+        Auth.auth().createUser(withEmail: email, password: password) { authResult, error in
+            if let error = error {
+                completion(.failure(error))
+            } else if let authResult = authResult {
+                completion(.success(authResult))
+            } else {
+                completion(.failure(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Bilinmeyen hata"])))
             }
         }
-
+    }
+    
     func logout(completion: @escaping (Result<Void, Error>) -> Void) {
         do {
             try Auth.auth().signOut()
@@ -50,7 +50,7 @@ final class AuthService: AuthServiceProtocol {
             completion(.failure(error))
         }
     }
-
+    
     func deleteAccount(completion: @escaping (Result<Void, Error>) -> Void) {
         Auth.auth().currentUser?.delete(completion: { error in
             if let error = error {

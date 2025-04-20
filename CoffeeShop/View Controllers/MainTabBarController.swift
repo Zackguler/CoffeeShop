@@ -27,7 +27,7 @@ class MainTabBarController: UITabBarController {
     }
     
     private func setupViewControllers() {
-        let home = createNavController(rootViewController: RedViewController(title: "Home"), title: "Home", imageName: "house")
+        let home = createNavController(rootViewController: HomeViewController(), title: "Home", imageName: "house")
         let cart = createNavController(rootViewController: RedViewController(title: "Sepet"), title: "Sepet", imageName: "cart")
         let products = createNavController(rootViewController: RedViewController(title: "Ürün Listesi"), title: "Ürünler", imageName: "list.bullet")
         
@@ -75,9 +75,10 @@ class MainTabBarController: UITabBarController {
               let navController = viewControllers.last as? UINavigationController else {
             return
         }
-        
+
         let profileViewModel = ProfileViewModel()
         let profileVC = ProfileViewController(viewModel: profileViewModel)
         navController.setViewControllers([profileVC], animated: true)
+        self.selectedIndex = 0
     }
 }

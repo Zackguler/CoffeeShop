@@ -47,7 +47,7 @@ final class LoginViewController: UIViewController {
     
     private lazy var emailTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.placeholder = "E-Posta"
+        textField.setPlaceholder("E-Posta")
         textField.keyboardType = .emailAddress
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
@@ -57,7 +57,7 @@ final class LoginViewController: UIViewController {
     
     private lazy var passwordTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.placeholder = "Şifre"
+        textField.setPlaceholder("Şifre")
         textField.isSecureTextEntry = true
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none

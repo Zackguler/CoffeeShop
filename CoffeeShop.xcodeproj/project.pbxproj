@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A18FDE082DB5748F006F8EA6 /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = A18FDE072DB5748F006F8EA6 /* SnapKit */; };
 		A1DA13002DB3125E006111DF /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = A1DA12FF2DB3125E006111DF /* FirebaseAnalytics */; };
 		A1DA13022DB3125E006111DF /* FirebaseAnalyticsOnDeviceConversion in Frameworks */ = {isa = PBXBuildFile; productRef = A1DA13012DB3125E006111DF /* FirebaseAnalyticsOnDeviceConversion */; };
 		A1DA13042DB3125F006111DF /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */ = {isa = PBXBuildFile; productRef = A1DA13032DB3125F006111DF /* FirebaseAnalyticsWithoutAdIdSupport */; };
@@ -31,10 +32,8 @@
 		A1DA132A2DB3125F006111DF /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = A1DA13292DB3125F006111DF /* FirebaseStorage */; };
 		A1DA132C2DB3125F006111DF /* FirebaseStorageCombine-Community in Frameworks */ = {isa = PBXBuildFile; productRef = A1DA132B2DB3125F006111DF /* FirebaseStorageCombine-Community */; };
 		A1DA132E2DB3125F006111DF /* FirebaseVertexAI in Frameworks */ = {isa = PBXBuildFile; productRef = A1DA132D2DB3125F006111DF /* FirebaseVertexAI */; };
-		A1DA13312DB31285006111DF /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = A1DA13302DB31285006111DF /* SnapKit */; };
-		A1DA13622DB32800006111DF /* SnapKit-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = A1DA135F2DB32800006111DF /* SnapKit-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		A1DA13642DB32969006111DF /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = A1DA13632DB32969006111DF /* GoogleService-Info.plist */; };
-		A1DA13B82DB33970006111DF /* SnapKit-Dynamic in Embed Frameworks */ = {isa = PBXBuildFile; productRef = A1DA13B62DB33970006111DF /* SnapKit-Dynamic */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		A1DA14462DB53E10006111DF /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = A1DA14452DB53E10006111DF /* Kingfisher */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,8 +60,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				A1DA13622DB32800006111DF /* SnapKit-Dynamic in Embed Frameworks */,
-				A1DA13B82DB33970006111DF /* SnapKit-Dynamic in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -120,12 +117,14 @@
 				A1DA13282DB3125F006111DF /* FirebaseRemoteConfig in Frameworks */,
 				A1DA13122DB3125F006111DF /* FirebaseDatabase in Frameworks */,
 				A1DA13142DB3125F006111DF /* FirebaseDynamicLinks in Frameworks */,
+				A1DA14462DB53E10006111DF /* Kingfisher in Frameworks */,
 				A1DA13062DB3125F006111DF /* FirebaseAppCheck in Frameworks */,
 				A1DA130A2DB3125F006111DF /* FirebaseAuth in Frameworks */,
 				A1DA13002DB3125E006111DF /* FirebaseAnalytics in Frameworks */,
 				A1DA13162DB3125F006111DF /* FirebaseFirestore in Frameworks */,
 				A1DA13242DB3125F006111DF /* FirebaseMessaging in Frameworks */,
 				A1DA13202DB3125F006111DF /* FirebaseInstallations in Frameworks */,
+				A18FDE082DB5748F006F8EA6 /* SnapKit in Frameworks */,
 				A1DA131C2DB3125F006111DF /* FirebaseFunctionsCombine-Community in Frameworks */,
 				A1DA13082DB3125F006111DF /* FirebaseAppDistribution-Beta in Frameworks */,
 				A1DA13042DB3125F006111DF /* FirebaseAnalyticsWithoutAdIdSupport in Frameworks */,
@@ -136,7 +135,6 @@
 				A1DA132A2DB3125F006111DF /* FirebaseStorage in Frameworks */,
 				A1DA130E2DB3125F006111DF /* FirebaseCore in Frameworks */,
 				A1DA13022DB3125E006111DF /* FirebaseAnalyticsOnDeviceConversion in Frameworks */,
-				A1DA13312DB31285006111DF /* SnapKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -287,6 +285,7 @@
 			packageReferences = (
 				A1DA12FE2DB3125E006111DF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 				A1DA132F2DB31285006111DF /* XCRemoteSwiftPackageReference "SnapKit" */,
+				A1DA14442DB53E10006111DF /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = A155D85F2DB2EE4300D28886 /* Products */;
@@ -690,9 +689,22 @@
 				minimumVersion = 5.7.1;
 			};
 		};
+		A1DA14442DB53E10006111DF /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.3.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		A18FDE072DB5748F006F8EA6 /* SnapKit */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1DA132F2DB31285006111DF /* XCRemoteSwiftPackageReference "SnapKit" */;
+			productName = SnapKit;
+		};
 		A1DA12FF2DB3125E006111DF /* FirebaseAnalytics */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A1DA12FE2DB3125E006111DF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
@@ -813,20 +825,10 @@
 			package = A1DA12FE2DB3125E006111DF /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
 			productName = FirebaseVertexAI;
 		};
-		A1DA13302DB31285006111DF /* SnapKit */ = {
+		A1DA14452DB53E10006111DF /* Kingfisher */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = A1DA132F2DB31285006111DF /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = SnapKit;
-		};
-		A1DA135F2DB32800006111DF /* SnapKit-Dynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A1DA132F2DB31285006111DF /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = "SnapKit-Dynamic";
-		};
-		A1DA13B62DB33970006111DF /* SnapKit-Dynamic */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A1DA132F2DB31285006111DF /* XCRemoteSwiftPackageReference "SnapKit" */;
-			productName = "SnapKit-Dynamic";
+			package = A1DA14442DB53E10006111DF /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

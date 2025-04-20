@@ -47,7 +47,7 @@ final class ForgetPasswordViewController: UIViewController {
     
     private lazy var emailTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.placeholder = "E-Posta"
+        textField.setPlaceholder("E-Posta")
         textField.keyboardType = .emailAddress
         textField.textColor = Colors().colorDarkGray
         textField.autocorrectionType = .no
