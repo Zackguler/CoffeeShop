@@ -12,7 +12,7 @@ import FirebaseAuth
 
 final class ProductDetailViewController: UIViewController {
 
-    private let viewModel: ProductDetailViewModelProtocol
+    private var viewModel: ProductDetailViewModelProtocol
 
     private let scrollView = UIScrollView()
     private let contentView = UIView()
@@ -76,17 +76,17 @@ final class ProductDetailViewController: UIViewController {
     }
 
     private func setupUI() {
+        view.addSubview(backButton)
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
-        
-        view.addSubview(backButton)
+        view.addSubview(bottomBar)
+
         backButton.addTarget(self, action: #selector(backTapped), for: .touchUpInside)
-        
+
         imageView.contentMode = .scaleAspectFill
         imageView.layer.cornerRadius = 20
         imageView.clipsToBounds = true
 
-        favoriteButton.tintColor = .systemYellow
         favoriteButton.addTarget(self, action: #selector(toggleFavorite), for: .touchUpInside)
 
         titleLabel.font = UIFont.fontBold22
@@ -107,12 +107,11 @@ final class ProductDetailViewController: UIViewController {
         contentView.addSubview(totalLabel)
         contentView.addSubview(priceLabel)
 
-        view.addSubview(bottomBar)
         bottomBar.backgroundColor = Colors().colorWhite
-
         [decrementButton, quantityValueLabel, incrementButton, addToCartButton].forEach {
             bottomBar.addSubview($0)
         }
+
         decrementButton.setTitle("-", for: .normal)
         decrementButton.titleLabel?.font = UIFont.fontBold22
         decrementButton.backgroundColor = Colors().colorWhite
@@ -136,10 +135,10 @@ final class ProductDetailViewController: UIViewController {
         quantityValueLabel.textColor = Colors().colorMidBlack
         quantityValueLabel.textAlignment = .center
 
-        addToCartButton.setTitle("Sepete Ekle", for: .normal)
         addToCartButton.setTitleColor(.white, for: .normal)
         addToCartButton.layer.cornerRadius = 10
         addToCartButton.addTarget(self, action: #selector(addToCartTapped), for: .touchUpInside)
+
         layout()
     }
 
@@ -149,6 +148,9 @@ final class ProductDetailViewController: UIViewController {
         descriptionLabel.text = viewModel.product.description
         updatePriceLabel()
         updateFavoriteUI()
+        viewModel.favoriteStatusChanged = { [weak self] _ in
+            self?.updateFavoriteUI()
+        }
     }
 
     private func updatePriceLabel() {
@@ -159,12 +161,14 @@ final class ProductDetailViewController: UIViewController {
     private func updateFavoriteUI() {
         let imageName = viewModel.isFavorited ? "star.fill" : "star"
         favoriteButton.setImage(UIImage(systemName: imageName), for: .normal)
+        favoriteButton.tintColor = viewModel.isFavorited ? Colors().colorRed : .lightGray
     }
 
     @objc private func toggleFavorite() {
         viewModel.toggleFavorite { [weak self] _ in
             DispatchQueue.main.async {
                 self?.updateFavoriteUI()
+                NotificationCenter.default.post(name: .favoritesUpdated, object: nil)
             }
         }
     }
@@ -189,7 +193,7 @@ final class ProductDetailViewController: UIViewController {
             }
         }
     }
-    
+
     @objc private func backTapped() {
         navigationController?.popViewController(animated: true)
     }
@@ -197,18 +201,28 @@ final class ProductDetailViewController: UIViewController {
 
 extension ProductDetailViewController {
     private func layout() {
-        scrollView.snp.makeConstraints { $0.edges.equalToSuperview() }
-        
         backButton.snp.makeConstraints {
             $0.top.equalTo(view.safeAreaLayoutGuide.snp.top).offset(8)
             $0.left.equalToSuperview().offset(16)
             $0.width.height.equalTo(32)
         }
-        contentView.snp.makeConstraints {
+
+        bottomBar.snp.makeConstraints {
+            $0.left.right.bottom.equalTo(view.safeAreaLayoutGuide)
+            $0.height.equalTo(80)
+        }
+
+        scrollView.snp.makeConstraints {
             $0.top.equalTo(backButton.snp.bottom).offset(8)
-            $0.left.right.bottom.equalToSuperview()
+            $0.left.right.equalToSuperview()
+            $0.bottom.equalTo(bottomBar.snp.top)
+        }
+
+        contentView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
             $0.width.equalToSuperview()
         }
+
         imageView.snp.makeConstraints {
             $0.top.equalToSuperview().offset(16)
             $0.left.right.equalToSuperview().inset(16)
@@ -230,6 +244,18 @@ extension ProductDetailViewController {
             $0.top.equalTo(titleLabel.snp.bottom).offset(8)
             $0.left.right.equalToSuperview().inset(16)
         }
+
+        totalLabel.snp.makeConstraints {
+            $0.left.right.equalToSuperview().inset(16)
+            $0.top.equalTo(descriptionLabel.snp.bottom).offset(16)
+        }
+
+        priceLabel.snp.makeConstraints {
+            $0.left.right.equalToSuperview().inset(24)
+            $0.top.equalTo(totalLabel.snp.bottom).offset(4)
+            $0.bottom.equalToSuperview().inset(16)
+        }
+
         decrementButton.snp.makeConstraints {
             $0.left.equalToSuperview().offset(16)
             $0.centerY.equalToSuperview()
@@ -253,21 +279,6 @@ extension ProductDetailViewController {
             $0.centerY.equalToSuperview()
             $0.height.equalTo(48)
             $0.width.equalToSuperview().multipliedBy(0.45)
-        }
-        
-        totalLabel.snp.makeConstraints {
-            $0.left.right.equalToSuperview().inset(16)
-            $0.bottom.equalTo(priceLabel.snp.top).offset(-4)
-        }
-
-        priceLabel.snp.remakeConstraints {
-            $0.left.right.equalToSuperview().inset(24)
-            $0.bottom.equalTo(bottomBar.snp.top)
-        }
-        
-        bottomBar.snp.makeConstraints {
-            $0.left.right.bottom.equalTo(view.safeAreaLayoutGuide)
-            $0.height.equalTo(80)
         }
     }
 }
