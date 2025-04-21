@@ -25,6 +25,6 @@ Uygulama, MVVM mimarisi ve protocol-oriented programlama yaklaşımıyla gelişt
 1. Xcode 14+ yüklü olduğundan emin olun
 2. Repo’yu klonlayın:
    ```bash
-   git clone https://github.com/kullaniciAdi/CoffeeShop.git
+   git clone https://github.com/Zackguler/CoffeeShop.git
    cd CoffeeShop
 
