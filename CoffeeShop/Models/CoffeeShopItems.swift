@@ -8,7 +8,7 @@
 import Foundation
 
 struct CoffeeShopItems: Codable {
-    let id: String
+    let productId: String
     let title: String
     let type: String
     let imageURL: String
@@ -16,7 +16,7 @@ struct CoffeeShopItems: Codable {
     let description: String
 
     enum CodingKeys: String, CodingKey {
-        case id = "product_id"
+        case productId = "productId"
         case title
         case type
         case imageURL = "image_url"

@@ -77,7 +77,7 @@ final class FirestoreManager {
     
     func addToFavorites(product: CoffeeShopItems, userId: String, completion: @escaping (Error?) -> Void) {
         let data: [String: Any] = [
-            "product_id": product.id,
+            "product_id": product.productId,
             "title": product.title,
             "price": product.price,
             "image_url": product.imageURL,
@@ -86,6 +86,6 @@ final class FirestoreManager {
             "added_at": FieldValue.serverTimestamp()
         ]
         
-        db.collection("users").document(userId).collection("favorites").document(product.id).setData(data, completion: completion)
+        db.collection("users").document(userId).collection("favorites").document(product.productId).setData(data, completion: completion)
     }
 }

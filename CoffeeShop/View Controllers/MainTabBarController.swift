@@ -29,7 +29,7 @@ class MainTabBarController: UITabBarController {
     
     private func setupViewControllers() {
         let home = createNavController(rootViewController: HomeViewController(), title: "Home", imageName: "house")
-        let cart = createNavController(rootViewController: RedViewController(title: "Sepet"), title: "Sepet", imageName: "cart")
+        let cart = createNavController(rootViewController: CartViewController(), title: "Sepet", imageName: "cart")
         let products = createNavController(rootViewController: ProductListViewController(), title: "Ürünler", imageName: "list.bullet")
         
         let profileVC = makeProfileOrLoginViewController()
