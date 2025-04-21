@@ -5,7 +5,6 @@
 //  Created by Semih Güler on 21.04.2025.
 //
 
-
 import UIKit
 import SnapKit
 
@@ -36,24 +35,24 @@ final class OrderDetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Sipariş Detayı"
+        title = "order_detail_title".localized
         view.backgroundColor = Colors().colorWhite
         setupUI()
     }
 
     private func setupUI() {
-        headerLabel.text = "Sipariş No: #\(viewModel.orderId)"
+        headerLabel.text = "order_number_prefix".localized + "\(viewModel.orderId)"
         headerLabel.font = .fontBold18
         headerLabel.textColor = Colors().colorDarkGray
 
         let formatter = DateFormatter()
         formatter.dateFormat = "dd MMMM yyyy - HH:mm"
-        formatter.locale = Locale(identifier: "tr_TR")
+        formatter.locale = Locale.current
         dateLabel.text = formatter.string(from: viewModel.orderDate)
         dateLabel.font = .fontRegular14
         dateLabel.textColor = .gray
 
-        totalLabel.text = "Toplam: \(String(format: "%.2f", viewModel.totalPrice))₺"
+        totalLabel.text = String(format: "order_total_label".localized, String(format: "%.2f", viewModel.totalPrice))
         totalLabel.font = .fontBold24
         totalLabel.textColor = Colors().colorDarkGray
         totalLabel.textAlignment = .center
@@ -69,10 +68,12 @@ final class OrderDetailViewController: UIViewController {
             $0.size.equalTo(CGSize(width: 32, height: 32))
         }
         backButton.addTarget(self, action: #selector(didTapBack), for: .touchUpInside)
+
         tableView.dataSource = self
         tableView.separatorStyle = .none
         tableView.register(OrderDetailItemCell.self, forCellReuseIdentifier: OrderDetailItemCell.identifier)
         tableView.backgroundColor = Colors().colorWhite
+
         headerLabel.snp.makeConstraints {
             $0.top.equalTo(backButton.snp.bottom).offset(16)
             $0.left.right.equalToSuperview().inset(16)

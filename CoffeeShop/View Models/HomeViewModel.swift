@@ -4,6 +4,7 @@
 //
 //  Created by Semih Güler on 20.04.2025.
 //
+
 import UIKit
 import FirebaseAuth
 import FirebaseFirestore
@@ -22,7 +23,7 @@ protocol HomeViewModelProtocol {
 }
 
 final class HomeViewModel: HomeViewModelProtocol {
-
+    
     var isUserLoggedIn: Bool {
         return Auth.auth().currentUser != nil
     }
@@ -63,7 +64,11 @@ final class HomeViewModel: HomeViewModelProtocol {
 
     func addToFavorites(_ product: CoffeeShopItems, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let userId = Auth.auth().currentUser?.uid else {
-            completion(.failure(NSError(domain: "Auth", code: 401, userInfo: [NSLocalizedDescriptionKey: "Giriş yapmanız gerekiyor."])))
+            completion(.failure(NSError(
+                domain: "Auth",
+                code: 401,
+                userInfo: [NSLocalizedDescriptionKey: "home_login_required".localized]
+            )))
             return
         }
 
@@ -83,7 +88,11 @@ final class HomeViewModel: HomeViewModelProtocol {
 
     func toggleFavorite(_ product: CoffeeShopItems, completion: @escaping (Result<Bool, Error>) -> Void) {
         guard let userId = Auth.auth().currentUser?.uid else {
-            completion(.failure(NSError(domain: "Auth", code: 401, userInfo: [NSLocalizedDescriptionKey: "Giriş yapmanız gerekiyor."])))
+            completion(.failure(NSError(
+                domain: "Auth",
+                code: 401,
+                userInfo: [NSLocalizedDescriptionKey: "home_login_required".localized]
+            )))
             return
         }
 
@@ -133,10 +142,14 @@ final class HomeViewModel: HomeViewModelProtocol {
             self.favoriteIDs = Set(ids)
         }
     }
-    
+
     func removeFromFavorites(productId: String, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let userId = Auth.auth().currentUser?.uid else {
-            completion(.failure(NSError(domain: "Auth", code: 401, userInfo: nil)))
+            completion(.failure(NSError(
+                domain: "Auth",
+                code: 401,
+                userInfo: [NSLocalizedDescriptionKey: "home_login_required".localized]
+            )))
             return
         }
 

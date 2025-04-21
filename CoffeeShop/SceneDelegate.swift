@@ -52,3 +52,18 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
 }
 
+extension SceneDelegate {
+    func setRootViewController(_ viewController: UIViewController, animated: Bool = true) {
+        guard let window = self.window else { return }
+        window.rootViewController = viewController
+        
+        if animated {
+            let transition = CATransition()
+            transition.type = .fade
+            transition.duration = 0.3
+            window.layer.add(transition, forKey: kCATransition)
+        }
+        
+        window.makeKeyAndVisible()
+    }
+}

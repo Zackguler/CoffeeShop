@@ -5,6 +5,13 @@
 //  Created by Semih Güler on 20.04.2025.
 //
 
+//
+//  FilterViewController.swift
+//  CoffeeShop
+//
+//  Created by Semih Güler on 20.04.2025.
+//
+
 import UIKit
 import SnapKit
 
@@ -19,7 +26,11 @@ final class FilterViewController: UIViewController {
     private var selectedCategories: Set<String> = []
     private var selectedSort: Bool? = nil
 
-    private let categories = [("Sıcak", "hot"), ("Soğuk", "cold"), ("Yiyecek", "food")]
+    private let categories = [
+        ("filter_hot".localized, "hot"),
+        ("filter_cold".localized, "cold"),
+        ("filter_food".localized, "food")
+    ]
 
     private let scrollView = UIScrollView()
     private let contentView = UIStackView()
@@ -47,17 +58,17 @@ final class FilterViewController: UIViewController {
             $0.width.equalToSuperview().inset(16)
         }
 
-        contentView.addArrangedSubview(makeSectionLabel("Kategoriler"))
+        contentView.addArrangedSubview(makeSectionLabel("filter_categories".localized))
 
         for (display, value) in categories {
             let view = makeCheckboxRow(title: display, key: value)
             contentView.addArrangedSubview(view)
         }
 
-        contentView.addArrangedSubview(makeSectionLabel("Fiyat Sıralama"))
+        contentView.addArrangedSubview(makeSectionLabel("filter_sort_title".localized))
 
-        let ascending = makeCheckboxRow(title: "Artan", key: "ascending")
-        let descending = makeCheckboxRow(title: "Azalan", key: "descending")
+        let ascending = makeCheckboxRow(title: "filter_sort_asc".localized, key: "ascending")
+        let descending = makeCheckboxRow(title: "filter_sort_desc".localized, key: "descending")
         sortViews = [ascending, descending]
 
         contentView.addArrangedSubview(ascending)
@@ -66,7 +77,7 @@ final class FilterViewController: UIViewController {
         applyButton = CustomButton(action: { [weak self] in
             self?.applyFilter()
         })
-        applyButton.setTitle("FİLTRELE", for: .normal)
+        applyButton.setTitle("filter_button_title".localized, for: .normal)
         view.addSubview(applyButton)
         applyButton.snp.makeConstraints { make in
             make.left.right.equalToSuperview().inset(8)

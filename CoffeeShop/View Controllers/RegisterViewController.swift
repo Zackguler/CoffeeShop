@@ -15,7 +15,7 @@ final class RegisterViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Üye Ol"
+        label.text = "register_title".localized
         label.font = .fontBold24
         label.textColor = Colors().colorDarkGray
         label.textAlignment = .center
@@ -48,21 +48,21 @@ final class RegisterViewController: UIViewController {
     
     private lazy var firstNameTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.setPlaceholder("Ad")
+        textField.setPlaceholder("register_first_name".localized)
         textField.textColor = Colors().colorDarkGray
         return textField
     }()
     
     private lazy var lastNameTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.setPlaceholder("Soyad")
+        textField.setPlaceholder("register_last_name".localized)
         textField.textColor = Colors().colorDarkGray
         return textField
     }()
     
     private lazy var emailTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.setPlaceholder("E-Posta")
+        textField.setPlaceholder("register_email".localized)
         textField.keyboardType = .emailAddress
         textField.textColor = Colors().colorDarkGray
         textField.autocorrectionType = .no
@@ -72,7 +72,7 @@ final class RegisterViewController: UIViewController {
     
     private lazy var passwordTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.setPlaceholder("Şifre")
+        textField.setPlaceholder("register_password".localized)
         textField.textColor = Colors().colorDarkGray
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
@@ -102,7 +102,7 @@ final class RegisterViewController: UIViewController {
         registerButton = CustomButton.init(action: {
             self.registerTapped()
         })
-        registerButton.setTitle("ÜYE OL", for: .normal)
+        registerButton.setTitle("register_button".localized, for: .normal)
         
         setCheckBox()
         mainStackView.addArrangedSubview(buttonText)
@@ -117,18 +117,19 @@ final class RegisterViewController: UIViewController {
     }
     
     private func setCheckBox() {
-        buttonText = ViewCheckLabel(text: "Kampanyalardan haberdar olmak için elektronik ileti almak istiyorum.",
-                                    range: "",
-                                    action: {
-            self.buttonText.buttonCheck.checkboxAnimation {
-                // checkbox logic
-                if self.buttonText.buttonCheck.isSelected {
-                    print("checkbox selected")
-                } else {
-                    print("checkbox unselected")
+        buttonText = ViewCheckLabel(
+            text: "register_checkbox".localized,
+            range: "",
+            action: {
+                self.buttonText.buttonCheck.checkboxAnimation {
+                    if self.buttonText.buttonCheck.isSelected {
+                        print("checkbox selected")
+                    } else {
+                        print("checkbox unselected")
+                    }
                 }
             }
-        })
+        )
         buttonText.labelText.textColor = Colors().colorDarkGray
     }
     
@@ -137,7 +138,7 @@ final class RegisterViewController: UIViewController {
               let lastName = lastNameTextField.text?.trimmingCharacters(in: .whitespaces), !lastName.isEmpty,
               let email = emailTextField.text?.trimmingCharacters(in: .whitespaces), !email.isEmpty,
               let password = passwordTextField.text, !password.isEmpty else {
-            showAlert(title: "Hata", message: "Lütfen tüm alanları doldurunuz")
+            showAlert(title: "error".localized, message: "register_fill_all".localized)
             return
         }
 
@@ -157,7 +158,7 @@ final class RegisterViewController: UIViewController {
                         window.makeKeyAndVisible()
                     }
                 case .failure(let error):
-                    self?.showAlert(title: "Kayıt Başarısız", message: error.localizedDescription)
+                    self?.showAlert(title: "register_failed".localized, message: error.localizedDescription)
                 }
             }
         }

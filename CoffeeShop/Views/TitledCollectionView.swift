@@ -17,7 +17,7 @@ final class TitledCollectionView<ItemType, Cell: UICollectionViewCell>: UIView, 
     
     private let emptyLabel: UILabel = {
         let label = UILabel()
-        label.text = "Favori ürün bulunmamaktadır."
+        label.text = "no_favorite_message".localized
         label.font = .fontRegular16
         label.textColor = Colors().colorDarkGray
         label.textAlignment = .center

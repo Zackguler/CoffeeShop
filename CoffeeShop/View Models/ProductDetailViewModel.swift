@@ -84,20 +84,24 @@ final class ProductDetailViewModel: ProductDetailViewModelProtocol {
     
     func addToCart(quantity: Int, completion: @escaping (Result<Void, Error>) -> Void) {
         guard !userId.isEmpty else {
-            completion(.failure(NSError(domain: "Auth", code: 401, userInfo: [NSLocalizedDescriptionKey: "Giriş gerekli."])))
+            completion(.failure(NSError(
+                domain: "Auth",
+                code: 401,
+                userInfo: [NSLocalizedDescriptionKey: "product_detail_login_required".localized]
+            )))
             return
         }
-        
+
         let cartRef = db.collection("users").document(userId).collection("cart").document(product.productId)
-        
+
         cartRef.getDocument { snapshot, error in
             var existingQuantity = 0
             if let data = snapshot?.data(), let q = data["quantity"] as? Int {
                 existingQuantity = q
             }
-            
+
             let newQuantity = existingQuantity + quantity
-            
+
             let data: [String: Any] = [
                 "productId": self.product.productId,
                 "title": self.product.title,
@@ -106,7 +110,7 @@ final class ProductDetailViewModel: ProductDetailViewModelProtocol {
                 "quantity": newQuantity,
                 "type": self.product.type
             ]
-            
+
             cartRef.setData(data, merge: true) { error in
                 DispatchQueue.main.async {
                     if let error = error {
@@ -118,4 +122,5 @@ final class ProductDetailViewModel: ProductDetailViewModelProtocol {
             }
         }
     }
+
 }

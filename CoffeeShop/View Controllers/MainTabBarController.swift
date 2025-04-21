@@ -6,12 +6,16 @@
 //
 
 import UIKit
+import FirebaseAuth
+import FirebaseFirestore
 
 class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupTabBarAppearance()
         setupViewControllers()
+        NotificationCenter.default.addObserver(self, selector: #selector(updateCartBadge), name: .cartUpdated, object: nil)
+        updateCartBadge()
     }
     
     private func setupTabBarAppearance() {
@@ -28,9 +32,9 @@ class MainTabBarController: UITabBarController {
     }
     
     private func setupViewControllers() {
-        let home = createNavController(rootViewController: HomeViewController(), title: "Home", imageName: "house")
-        let cart = createNavController(rootViewController: CartViewController(), title: "Sepet", imageName: "cart")
-        let products = createNavController(rootViewController: ProductListViewController(), title: "Ürünler", imageName: "list.bullet")
+        let home = createNavController(rootViewController: HomeViewController(), title: "tab_home".localized, imageName: "house")
+        let cart = createNavController(rootViewController: CartViewController(), title: "tab_cart".localized, imageName: "cart")
+        let products = createNavController(rootViewController: ProductListViewController(), title: "tab_products".localized, imageName: "list.bullet")
         
         let profileVC = makeProfileOrLoginViewController()
         
@@ -38,7 +42,7 @@ class MainTabBarController: UITabBarController {
         if profileVC is UINavigationController {
             profileNav = profileVC
         } else {
-            profileNav = createNavController(rootViewController: profileVC, title: "Profil", imageName: "person")
+            profileNav = createNavController(rootViewController: profileVC, title: "tab_profile".localized, imageName: "person")
         }
         
         viewControllers = [home, cart, products, profileNav]
@@ -56,7 +60,7 @@ class MainTabBarController: UITabBarController {
         
         if profileViewModel.isLoggedIn {
             let profileVC = ProfileViewController(viewModel: profileViewModel)
-            profileVC.tabBarItem = UITabBarItem(title: "Profil", image: UIImage(systemName: "person"), tag: 3)
+            profileVC.tabBarItem = UITabBarItem(title: "tab_profile".localized, image: UIImage(systemName: "person"), tag: 3)
             return profileVC
         } else {
             let loginVC = LoginViewController()
@@ -66,7 +70,7 @@ class MainTabBarController: UITabBarController {
             
             let loginNav = UINavigationController(rootViewController: loginVC)
             loginNav.isNavigationBarHidden = true
-            loginNav.tabBarItem = UITabBarItem(title: "Profil", image: UIImage(systemName: "person"), tag: 3)
+            loginNav.tabBarItem = UITabBarItem(title: "tab_profile".localized, image: UIImage(systemName: "person"), tag: 3)
             return loginNav
         }
     }
@@ -82,6 +86,42 @@ class MainTabBarController: UITabBarController {
         navController.setViewControllers([profileVC], animated: true)
         self.selectedIndex = 0
     }
+    
+    @objc private func updateCartBadge() {
+        guard let userID = Auth.auth().currentUser?.uid else {
+            tabBar.items?[1].badgeValue = nil
+            return
+        }
+
+        let cartRef = Firestore.firestore()
+            .collection("users")
+            .document(userID)
+            .collection("cart")
+
+        cartRef.getDocuments { snapshot, error in
+            if let error = error {
+                print("Cart verisi alınamadı: \(error)")
+                return
+            }
+
+            var totalQuantity = 0
+            snapshot?.documents.forEach { document in
+                let data = document.data()
+                let quantity = data["quantity"] as? Int ?? 0
+                totalQuantity += quantity
+            }
+
+            DispatchQueue.main.async {
+                if totalQuantity > 0 {
+                    self.tabBar.items?[1].badgeValue = "\(totalQuantity)"
+                    self.tabBar.items?[1].badgeColor = .red
+                } else {
+                    self.tabBar.items?[1].badgeValue = nil
+                }
+            }
+        }
+    }
+
 }
 
 extension MainTabBarController: UITabBarControllerDelegate {

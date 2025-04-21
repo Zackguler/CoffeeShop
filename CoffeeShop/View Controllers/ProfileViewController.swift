@@ -27,7 +27,7 @@ final class ProfileViewController: UIViewController {
         let button = CustomButton {
             self.showOrderHistory()
         }
-        button.setTitle("Sipariş Geçmişi", for: .normal)
+        button.setTitle("order_history".localized, for: .normal)
         return button
     }()
     
@@ -51,7 +51,7 @@ final class ProfileViewController: UIViewController {
         let button = CustomButton {
             self.logoutTapped()
         }
-        button.setTitle("Çıkış Yap", for: .normal)
+        button.setTitle("logout".localized, for: .normal)
         return button
     }()
     
@@ -59,7 +59,7 @@ final class ProfileViewController: UIViewController {
         let button = CustomButton {
             self.deleteAccountTapped()
         }
-        button.setTitle("Hesabı Sil", for: .normal)
+        button.setTitle("delete_account".localized, for: .normal)
         button.backgroundColor = Colors().colorRed
         return button
     }()
@@ -84,7 +84,7 @@ final class ProfileViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Colors().colorWhite
-        title = "Profil"
+        title = "profile_title".localized
         setupUI()
         loadUserInfo()
     }
@@ -148,7 +148,7 @@ final class ProfileViewController: UIViewController {
         viewModel.logout { [weak self] error in
             DispatchQueue.main.async {
                 if let error = error {
-                    self?.showAlert(title: "Hata", message: error.localizedDescription)
+                    self?.showAlert(title: "error".localized, message: error.localizedDescription)
                 } else {
                     self?.goToLogin()
                     LoadingManager.shared.hide()
@@ -157,17 +157,15 @@ final class ProfileViewController: UIViewController {
         }
     }
 
-    
     private func deleteAccountTapped() {
         let alert = UIAlertController(
-            title: "Hesabı Sil",
-            message: "Hesabınızı silmek istediğinize emin misiniz?",
+            title: "delete_account".localized,
+            message: "delete_account_confirm".localized,
             preferredStyle: .alert
         )
 
-        alert.addAction(UIAlertAction(title: "Vazgeç", style: .cancel))
-
-        alert.addAction(UIAlertAction(title: "Evet", style: .destructive, handler: { _ in
+        alert.addAction(UIAlertAction(title: "cancel".localized, style: .cancel))
+        alert.addAction(UIAlertAction(title: "confirm".localized, style: .destructive, handler: { _ in
             LoadingManager.shared.show(in: self.view)
 
             self.viewModel.deleteAccount { [weak self] error in
@@ -175,7 +173,7 @@ final class ProfileViewController: UIViewController {
                     LoadingManager.shared.hide()
 
                     if let error = error {
-                        self?.showAlert(title: "Hata", message: error.localizedDescription)
+                        self?.showAlert(title: "error".localized, message: error.localizedDescription)
                     } else {
                         self?.goToLogin()
                     }
@@ -186,7 +184,6 @@ final class ProfileViewController: UIViewController {
         present(alert, animated: true)
     }
 
-    
     private func goToLogin() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,
               let window = windowScene.windows.first else { return }

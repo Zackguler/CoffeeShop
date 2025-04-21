@@ -4,6 +4,7 @@
 //
 //  Created by Semih Güler on 21.04.2025.
 //
+
 import UIKit
 
 final class OrderHistoryCell: UITableViewCell {
@@ -53,8 +54,9 @@ final class OrderHistoryCell: UITableViewCell {
     }
 
     func configure(with order: PastOrder) {
-        orderIdLabel.text = "Sipariş No: #\(order.orderId)"
-        summaryLabel.text = "\(order.items.count) ürün • Toplam: \(String(format: "%.2f", order.totalPrice))₺"
+        let formattedPrice = String(format: "%.2f", order.totalPrice)
+        orderIdLabel.text = String(format: "order_id_format".localized, order.orderId)
+        summaryLabel.text = String(format: "order_summary_format".localized, order.items.count, formattedPrice)
 
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"

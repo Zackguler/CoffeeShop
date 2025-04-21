@@ -11,17 +11,13 @@ import SnapKit
 final class ProductListViewController: UIViewController {
 
     private let viewModel: ProductListViewModelProtocol
-    
     private var debounceTimer: Timer?
 
-    private let searchBarContainer: UIView = {
-        let view = UIView()
-        return view
-    }()
+    private let searchBarContainer: UIView = UIView()
 
     private let searchTextField: UITextField = {
         let textField = UITextField()
-        let placeholderText = "Ürün ara"
+        let placeholderText = "search_placeholder".localized
         let placeholderColor = Colors().colorDarkGray.withAlphaComponent(0.6)
         textField.attributedPlaceholder = NSAttributedString(
             string: placeholderText,
@@ -81,14 +77,15 @@ final class ProductListViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Ürünler"
+        title = "product_list_title".localized
         view.backgroundColor = .white
         setupUI()
     }
+
     override func viewWillAppear(_ animated: Bool) {
         fetchData()
     }
-    
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         view.endEditing(true)
@@ -101,11 +98,13 @@ final class ProductListViewController: UIViewController {
         searchBarContainer.addSubview(searchTextField)
         searchBarContainer.addSubview(filterIconButton)
         layout()
+
         collectionView.delegate = self
         collectionView.dataSource = self
 
         filterIconButton.addTarget(self, action: #selector(openFilter), for: .touchUpInside)
         searchTextField.addTarget(self, action: #selector(searchTextChanged(_:)), for: .editingChanged)
+
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
         tapGesture.cancelsTouchesInView = false
         view.addGestureRecognizer(tapGesture)
@@ -145,7 +144,6 @@ final class ProductListViewController: UIViewController {
         }
     }
 
-    
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }

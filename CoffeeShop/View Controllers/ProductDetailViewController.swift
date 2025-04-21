@@ -37,7 +37,7 @@ final class ProductDetailViewController: UIViewController {
     
     private let totalLabel: UILabel = {
         let label = UILabel()
-        label.text = "Toplam Fiyat"
+        label.text = "product_total_price_label".localized
         label.font = UIFont.fontRegular14
         label.textColor = Colors().colorDarkGray
         return label
@@ -47,7 +47,7 @@ final class ProductDetailViewController: UIViewController {
         let button = CustomButton {
             self.addToCartTapped()
         }
-        button.setTitle("Sepete Ekle", for: .normal)
+        button.setTitle("product_add_to_cart".localized, for: .normal)
         return button
     }()
 
@@ -194,9 +194,16 @@ final class ProductDetailViewController: UIViewController {
             DispatchQueue.main.async {
                 switch result {
                 case .success:
-                    self?.showAlert(title: "Başarılı", message: "Ürün sepete eklendi.")
+                    self?.showAlert(
+                        title: "product_success_title".localized,
+                        message: "product_success_message".localized
+                    )
+                    NotificationCenter.default.post(name: .cartUpdated, object: nil)
                 case .failure(let error):
-                    self?.showAlert(title: "Hata", message: error.localizedDescription)
+                    self?.showAlert(
+                        title: "product_error_title".localized,
+                        message: error.localizedDescription
+                    )
                 }
             }
         }
