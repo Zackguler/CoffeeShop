@@ -1,0 +1,105 @@
+//
+//  Localizable.strings
+//  CoffeeShop
+//
+//  Created by Semih Güler on 21.04.2025.
+//
+
+"cart_title" = "Sepet";
+"cart_empty_message" = "Sepette ürün bulunmamaktadır.";
+"place_order" = "SİPARİŞ VER";
+"order_error_title" = "Hata";
+"order_error_message" = "Sipariş oluşturulamadı.";
+"total_label" = "Toplam: %@ ₺";
+
+"filter_categories" = "Kategoriler";
+"filter_sort_title" = "Fiyat Sıralama";
+"filter_sort_asc" = "Artan";
+"filter_sort_desc" = "Azalan";
+"filter_button_title" = "FİLTRELE";
+"filter_hot" = "Sıcak";
+"filter_cold" = "Soğuk";
+"filter_food" = "Yiyecek";
+
+"forgot_title" = "Şifremi Unuttum";
+"email_placeholder" = "E-Posta";
+"reset_button_title" = "Şifreyi Sıfırla";
+"error_title" = "Hata";
+"error_empty_email" = "Lütfen e-posta adresinizi girin.";
+"success_title" = "Başarılı";
+"reset_success_message" = "Şifre sıfırlama e-postası gönderildi.";
+
+"hot_drinks_title" = "Sıcak İçecekler";
+"cold_drinks_title" = "Soğuk İçecekler";
+"food_title" = "Yiyecekler";
+"favorite_products_title" = "Favori Ürünler";
+"login_required_title" = "Giriş Gerekli";
+"login_required_message" = "Favorilere eklemek için giriş yapmalısınız.";
+
+"no_favorite_message" = "Favori ürün bulunmamaktadır.";
+
+"login_title" = "Giriş Yap";
+"email_placeholder" = "E-Posta";
+"password_placeholder" = "Şifre";
+"forgot_password" = "Şifremi Unuttum?";
+"login_button" = "GİRİŞ YAP";
+"register_prompt" = "Hesabın yok mu? Üye Ol";
+"error_title" = "Hata";
+"error_fill_fields" = "Lütfen tüm alanları doldurunuz.";
+"login_failed_title" = "Giriş Başarısız";
+
+"tab_home" = "Home";
+"tab_cart" = "Sepet";
+"tab_products" = "Ürünler";
+"tab_profile" = "Profil";
+
+"order_detail_title" = "Sipariş Detayı";
+"order_number_prefix" = "Sipariş No: #";
+"order_total_label" = "Toplam: %@₺";
+
+"quantity_price_format" = "%d adet x %@₺";
+
+"order_history_title" = "Sipariş Geçmişi";
+
+"order_id_format" = "Sipariş No: #%@";
+"order_summary_format" = "%d ürün • Toplam: %@₺";
+
+"order_success_title" = "Siparişin Başarıyla Oluşturuldu!";
+"order_info_format" = "No: #%@  •  %@";
+"order_total_format" = "Toplam: %@₺";
+"order_back_home_button" = "ANA SAYFAYA DÖN";
+
+"order_summary_quantity_price" = "%d adet × %@₺";
+
+"product_total_price_label" = "Toplam Fiyat";
+"product_add_to_cart" = "Sepete Ekle";
+"product_success_title" = "Başarılı";
+"product_success_message" = "Ürün sepete eklendi.";
+"product_error_title" = "Hata";
+
+"product_list_title" = "Ürünler";
+"search_placeholder" = "Ürün ara";
+
+"profile_title" = "Profil";
+"order_history" = "Sipariş Geçmişi";
+"logout" = "Çıkış Yap";
+"delete_account" = "Hesabı Sil";
+"delete_account_confirm" = "Hesabınızı silmek istediğinize emin misiniz?";
+"cancel" = "Vazgeç";
+"confirm" = "Evet";
+"error" = "Hata";
+
+"register_title" = "Üye Ol";
+"register_first_name" = "Ad";
+"register_last_name" = "Soyad";
+"register_email" = "E-Posta";
+"register_password" = "Şifre";
+"register_button" = "ÜYE OL";
+"register_checkbox" = "Kampanyalardan haberdar olmak için elektronik ileti almak istiyorum.";
+"register_fill_all" = "Lütfen tüm alanları doldurunuz";
+"register_failed" = "Kayıt Başarısız";
+"error" = "Hata";
+
+"product_detail_login_required" = "Giriş gerekli.";
+
+"home_login_required" = "Giriş yapmanız gerekiyor.";

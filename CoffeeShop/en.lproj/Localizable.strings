@@ -1,0 +1,106 @@
+//
+//  Localizable.strings
+//  CoffeeShop
+//
+//  Created by Semih Güler on 21.04.2025.
+//
+
+"cart_title" = "Cart";
+"cart_empty_message" = "There are no items in the cart.";
+"place_order" = "PLACE ORDER";
+"order_error_title" = "Error";
+"order_error_message" = "Order could not be placed.";
+"total_label" = "Total: %@ ₺";
+
+"filter_categories" = "Categories";
+"filter_sort_title" = "Price Sorting";
+"filter_sort_asc" = "Ascending";
+"filter_sort_desc" = "Descending";
+"filter_button_title" = "FILTER";
+"filter_hot" = "Hot";
+"filter_cold" = "Cold";
+"filter_food" = "Food";
+
+"forgot_title" = "Forgot Password";
+"email_placeholder" = "Email";
+"reset_button_title" = "Reset Password";
+"error_title" = "Error";
+"error_empty_email" = "Please enter your email address.";
+"success_title" = "Success";
+"reset_success_message" = "Password reset email has been sent.";
+
+"hot_drinks_title" = "Hot Drinks";
+"cold_drinks_title" = "Cold Drinks";
+"food_title" = "Food";
+"favorite_products_title" = "Favorite Products";
+"login_required_title" = "Login Required";
+"login_required_message" = "You must be logged in to favorite items.";
+
+"no_favorite_message" = "No favorite products found.";
+
+"tab_home" = "Home";
+"tab_cart" = "Cart";
+"tab_products" = "Products";
+"tab_profile" = "Profile";
+
+"order_detail_title" = "Order Detail";
+"order_number_prefix" = "Order No: #";
+"order_total_label" = "Total: %@₺";
+
+"quantity_price_format" = "%d pcs x %@₺";
+
+"order_history_title" = "Order History";
+
+"order_id_format" = "Order No: #%@";
+"order_summary_format" = "%d items • Total: %@₺";
+
+"order_success_title" = "Your Order Was Successfully Created!";
+"order_info_format" = "No: #%@  •  %@";
+"order_total_format" = "Total: %@₺";
+"order_back_home_button" = "GO TO HOME";
+
+"order_summary_quantity_price" = "%d pcs × %@₺";
+
+"product_total_price_label" = "Total Price";
+"product_add_to_cart" = "Add to Cart";
+"product_success_title" = "Success";
+"product_success_message" = "Item added to cart.";
+"product_error_title" = "Error";
+
+"product_list_title" = "Products";
+"search_placeholder" = "Search product";
+
+"profile_title" = "Profile";
+"order_history" = "Order History";
+"logout" = "Logout";
+"delete_account" = "Delete Account";
+"delete_account_confirm" = "Are you sure you want to delete your account?";
+"cancel" = "Cancel";
+"confirm" = "Yes";
+"error" = "Error";
+
+"register_title" = "Sign Up";
+"register_first_name" = "First Name";
+"register_last_name" = "Last Name";
+"register_email" = "Email";
+"register_password" = "Password";
+"register_button" = "SIGN UP";
+"register_checkbox" = "I want to receive promotional emails.";
+"register_fill_all" = "Please fill in all fields";
+"register_failed" = "Registration Failed";
+"error" = "Error";
+
+"product_detail_login_required" = "Login required.";
+
+"home_login_required" = "You need to log in.";
+
+
+"login_title" = "Login";
+"email_placeholder" = "Email";
+"password_placeholder" = "Password";
+"forgot_password" = "Forgot Password?";
+"login_button" = "LOGIN";
+"register_prompt" = "Don't have an account? Register";
+"error_title" = "Error";
+"error_fill_fields" = "Please fill in all fields.";
+"login_failed_title" = "Login Failed";
