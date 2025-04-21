@@ -114,9 +114,11 @@ final class CartItemCell: UITableViewCell {
 
     @objc private func didTapMinus() {
         onDecrease?()
+        NotificationCenter.default.post(name: .cartUpdated, object: nil)
     }
 
     @objc private func didTapPlus() {
         onIncrease?()
+        NotificationCenter.default.post(name: .cartUpdated, object: nil)
     }
 }

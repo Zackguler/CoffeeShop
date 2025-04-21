@@ -14,7 +14,7 @@ protocol ProductDetailViewModelProtocol {
     var isFavorited: Bool { get }
     var favoriteStatusChanged: ((Bool) -> Void)? { get set }
     
-    func toggleFavorite(completion: @escaping (Bool) -> Void)
+    func toggleFavorite(completion: @escaping (Bool?) -> Void)
     func addToCart(quantity: Int, completion: @escaping (Result<Void, Error>) -> Void)
 }
 
@@ -46,8 +46,12 @@ final class ProductDetailViewModel: ProductDetailViewModelProtocol {
             }
     }
     
-    func toggleFavorite(completion: @escaping (Bool) -> Void) {
-        guard !userId.isEmpty else { return }
+    func toggleFavorite(completion: @escaping (Bool?) -> Void) {
+        guard !userId.isEmpty else {
+            completion(nil)
+            return
+        }
+
         let ref = db.collection("users").document(userId)
             .collection("favorites").document(product.productId)
 
@@ -79,8 +83,6 @@ final class ProductDetailViewModel: ProductDetailViewModelProtocol {
             }
         }
     }
-
-
     
     func addToCart(quantity: Int, completion: @escaping (Result<Void, Error>) -> Void) {
         guard !userId.isEmpty else {

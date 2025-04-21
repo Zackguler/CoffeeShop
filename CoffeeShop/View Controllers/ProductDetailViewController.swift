@@ -173,13 +173,22 @@ final class ProductDetailViewController: UIViewController {
     }
 
     @objc private func toggleFavorite() {
-        viewModel.toggleFavorite { [weak self] _ in
+        viewModel.toggleFavorite { [weak self] isFavorited in
             DispatchQueue.main.async {
-                self?.updateFavoriteUI()
+                guard let self = self else { return }
+                guard let isFavorited = isFavorited else {
+                    self.showAlert(
+                        title: "product_detail_login_required".localized,
+                        message: "login_required_message".localized
+                    )
+                    return
+                }
+                self.updateFavoriteUI()
                 NotificationCenter.default.post(name: .favoritesUpdated, object: nil)
             }
         }
     }
+
 
     @objc private func decrementTapped() {
         quantity -= 1
