@@ -15,7 +15,8 @@ protocol ProfileViewModelProtocol {
     
     func fetchUser(completion: @escaping (User) -> Void)
     func logout(completion: @escaping (Error?) -> Void)
-    func deleteAccount(completion: @escaping (Error?) -> Void)
+    func deleteAccount(password: String, completion: @escaping (Error?) -> Void)
+
 }
 
 final class ProfileViewModel: ProfileViewModelProtocol {
@@ -40,6 +41,7 @@ final class ProfileViewModel: ProfileViewModelProtocol {
             case .success(let user):
                 completion(user)
             case .failure(let error):
+                self.logout() {_ in }
                 print("Kullanıcı verisi alınamadı:", error.localizedDescription)
             }
         }
@@ -54,21 +56,33 @@ final class ProfileViewModel: ProfileViewModelProtocol {
         }
     }
 
-    func deleteAccount(completion: @escaping (Error?) -> Void) {
-        guard let user = Auth.auth().currentUser else {
+    func deleteAccount(password: String, completion: @escaping (Error?) -> Void) {
+        guard let user = Auth.auth().currentUser,
+              let email = user.email else {
             completion(NSError(domain: "AuthError", code: -1, userInfo: [NSLocalizedDescriptionKey: "Kullanıcı bulunamadı"]))
             return
         }
 
-        let userId = user.uid
-        FirestoreManager.shared.deleteUser(userId: userId) { error in
+        let credential = EmailAuthProvider.credential(withEmail: email, password: password)
+
+        user.reauthenticate(with: credential) { _, error in
             if let error = error {
                 completion(error)
                 return
             }
-            user.delete { error in
-                completion(error)
+
+            let userId = user.uid
+            FirestoreManager.shared.deleteUser(userId: userId) { error in
+                if let error = error {
+                    completion(error)
+                    return
+                }
+
+                user.delete { error in
+                    completion(error)
+                }
             }
         }
     }
+
 }

@@ -164,11 +164,23 @@ final class ProfileViewController: UIViewController {
             preferredStyle: .alert
         )
 
+        alert.addTextField { textField in
+            textField.placeholder = "Şifrenizi girin"
+            textField.isSecureTextEntry = true
+        }
+
         alert.addAction(UIAlertAction(title: "cancel".localized, style: .cancel))
-        alert.addAction(UIAlertAction(title: "confirm".localized, style: .destructive, handler: { _ in
+
+        alert.addAction(UIAlertAction(title: "confirm".localized, style: .destructive, handler: { [weak self] _ in
+            guard let self = self else { return }
+            guard let password = alert.textFields?.first?.text, !password.isEmpty else {
+                self.showAlert(title: "error".localized, message: "Şifre boş olamaz.")
+                return
+            }
+
             LoadingManager.shared.show(in: self.view)
 
-            self.viewModel.deleteAccount { [weak self] error in
+            self.viewModel.deleteAccount(password: password) { [weak self] error in
                 DispatchQueue.main.async {
                     LoadingManager.shared.hide()
 
