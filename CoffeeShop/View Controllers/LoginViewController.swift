@@ -5,13 +5,6 @@
 //  Created by Semih Güler on 19.04.2025.
 //
 
-//
-//  LoginViewController.swift
-//  CoffeeShop
-//
-//  Created by Semih Güler on 21.04.2025.
-//
-
 import UIKit
 import SnapKit
 
@@ -19,6 +12,15 @@ final class LoginViewController: UIViewController {
     
     private let viewModel: LoginViewModelProtocol = LoginViewModel()
     var onLoginSuccess: (() -> Void)?
+    
+    private let languageButton: UIButton = {
+        let button = UIButton(type: .system)
+        let config = UIImage.SymbolConfiguration(pointSize: 20, weight: .regular)
+        let image = UIImage(systemName: "globe", withConfiguration: config)
+        button.setImage(image, for: .normal)
+        button.tintColor = Colors().colorDarkGray
+        return button
+    }()
     
     private lazy var containerView: UIView = {
         let view = UIView()
@@ -30,7 +32,7 @@ final class LoginViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Giriş Yap"
+        label.text = "login_title".localized
         label.font = .fontBold24
         label.textColor = Colors().colorDarkGray
         label.textAlignment = .center
@@ -47,7 +49,7 @@ final class LoginViewController: UIViewController {
     
     private lazy var emailTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.setPlaceholder("E-Posta")
+        textField.setPlaceholder("email_placeholder".localized)
         textField.keyboardType = .emailAddress
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
@@ -57,7 +59,7 @@ final class LoginViewController: UIViewController {
     
     private lazy var passwordTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.setPlaceholder("Şifre")
+        textField.setPlaceholder("password_placeholder".localized)
         textField.isSecureTextEntry = true
         textField.autocorrectionType = .no
         textField.autocapitalizationType = .none
@@ -67,7 +69,7 @@ final class LoginViewController: UIViewController {
     
     private lazy var forgotPasswordButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Şifremi Unuttum?", for: .normal)
+        button.setTitle("forgot_password".localized, for: .normal)
         button.setTitleColor(Colors().colorRed, for: .normal)
         button.titleLabel?.font = .fontRegular14
         button.contentHorizontalAlignment = .right
@@ -79,13 +81,13 @@ final class LoginViewController: UIViewController {
         let button = CustomButton {
             self.loginTapped()
         }
-        button.setTitle("GİRİŞ YAP", for: .normal)
+        button.setTitle("login_button".localized, for: .normal)
         return button
     }()
     
     private lazy var goToRegisterButton: UIButton = {
         let button = UIButton()
-        button.setTitle("Hesabın yok mu? Üye Ol", for: .normal)
+        button.setTitle("register_prompt".localized, for: .normal)
         button.setTitleColor(Colors().colorRed, for: .normal)
         button.titleLabel?.font = .fontRegular14
         button.addTarget(self, action: #selector(goToRegister), for: .touchUpInside)
@@ -109,32 +111,63 @@ final class LoginViewController: UIViewController {
         mainStackView.addArrangedSubview(forgotPasswordButton)
         mainStackView.addArrangedSubview(loginButton)
         mainStackView.addArrangedSubview(goToRegisterButton)
+        
+        view.addSubview(languageButton)
+        
+        languageButton.snp.makeConstraints { make in
+            make.bottom.equalTo(view.safeAreaLayoutGuide.snp.bottom).offset(-16)
+            make.trailing.equalToSuperview().inset(16)
+            make.width.height.equalTo(30)
+        }
+        languageButton.addTarget(self, action: #selector(didTapLanguageButton), for: .touchUpInside)
+    }
+    
+    private func setLanguage(_ code: String) {
+        LocalizationManager.shared.currentLanguage = code
+        UserDefaults.standard.set([code], forKey: "AppleLanguages")
+        UserDefaults.standard.synchronize()
+        exit(0)
     }
     
     @objc private func loginTapped() {
         guard let email = emailTextField.text?.trimmingCharacters(in: .whitespaces),
               let password = passwordTextField.text,
               !email.isEmpty, !password.isEmpty else {
-            showAlert(title: "Hata", message: "Lütfen tüm alanları doldurunuz.")
+            showAlert(title: "error_title".localized, message: "error_fill_fields".localized)
             return
         }
-
+        
         LoadingManager.shared.show(in: view)
-
+        
         viewModel.login(email: email, password: password) { [weak self] result in
             DispatchQueue.main.async {
                 LoadingManager.shared.hide()
-
+                
                 switch result {
                 case .success:
                     self?.onLoginSuccess?()
+                    NotificationCenter.default.post(name: .cartUpdated, object: nil)
                 case .failure(let error):
-                    self?.showAlert(title: "Giriş Başarısız", message: error.localizedDescription)
+                    self?.showAlert(title: "login_failed_title".localized, message: error.localizedDescription)
                 }
             }
         }
     }
-
+    
+    @objc private func didTapLanguageButton() {
+        let alert = UIAlertController(title: "Dil Seç", message: nil, preferredStyle: .actionSheet)
+        
+        alert.addAction(UIAlertAction(title: "🇹🇷 Türkçe", style: .default, handler: { _ in
+            self.setLanguage("tr")
+        }))
+        alert.addAction(UIAlertAction(title: "🇺🇸 English", style: .default, handler: { _ in
+            self.setLanguage("en")
+        }))
+        alert.addAction(UIAlertAction(title: "İptal", style: .cancel))
+        
+        present(alert, animated: true)
+    }
+    
     
     @objc private func goToRegister() {
         let registerVC = RegisterViewController()

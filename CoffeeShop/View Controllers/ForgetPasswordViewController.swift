@@ -5,6 +5,13 @@
 //  Created by Semih Güler on 21.04.2025.
 //
 
+//
+//  ForgetPasswordViewController.swift
+//  CoffeeShop
+//
+//  Created by Semih Güler on 21.04.2025.
+//
+
 import UIKit
 import SnapKit
 
@@ -14,7 +21,7 @@ final class ForgetPasswordViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Şifremi Unuttum"
+        label.text = "forgot_title".localized
         label.font = .fontBold24
         label.textColor = Colors().colorDarkGray
         label.textAlignment = .center
@@ -47,7 +54,7 @@ final class ForgetPasswordViewController: UIViewController {
     
     private lazy var emailTextField: CustomTextField = {
         let textField = CustomTextField()
-        textField.setPlaceholder("E-Posta")
+        textField.setPlaceholder("email_placeholder".localized)
         textField.keyboardType = .emailAddress
         textField.textColor = Colors().colorDarkGray
         textField.autocorrectionType = .no
@@ -59,7 +66,7 @@ final class ForgetPasswordViewController: UIViewController {
         let button = CustomButton {
             self.resetTapped()
         }
-        button.setTitle("Şifreyi Sıfırla", for: .normal)
+        button.setTitle("reset_button_title".localized, for: .normal)
         return button
     }()
     
@@ -84,7 +91,7 @@ final class ForgetPasswordViewController: UIViewController {
     
     private func resetTapped() {
         guard let email = emailTextField.text?.trimmingCharacters(in: .whitespacesAndNewlines), !email.isEmpty else {
-            showAlert(title: "Hata", message: "Lütfen e-posta adresinizi girin.")
+            showAlert(title: "error_title".localized, message: "error_empty_email".localized)
             return
         }
 
@@ -95,9 +102,9 @@ final class ForgetPasswordViewController: UIViewController {
                 LoadingManager.shared.hide()
                 switch result {
                 case .success:
-                    self?.showAlert(title: "Başarılı", message: "Şifre sıfırlama e-postası gönderildi.")
+                    self?.showAlert(title: "success_title".localized, message: "reset_success_message".localized)
                 case .failure(let error):
-                    self?.showAlert(title: "Hata", message: error.localizedDescription)
+                    self?.showAlert(title: "error_title".localized, message: error.localizedDescription)
                 }
             }
         }

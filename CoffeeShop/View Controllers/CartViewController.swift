@@ -12,7 +12,7 @@ final class CartViewController: UIViewController {
     
     private let emptyLabel: UILabel = {
         let label = UILabel()
-        label.text = "Sepette ürün bulunmamaktadır."
+        label.text = "cart_empty_message".localized
         label.font = UIFont.fontRegular16
         label.textColor = Colors().colorDarkGray
         label.textAlignment = .center
@@ -36,11 +36,13 @@ final class CartViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Sepet"
+        title = "cart_title".localized
         view.backgroundColor = Colors().colorWhite
         setupUI()
     }
+    
     override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
         loadData()
     }
     
@@ -51,11 +53,18 @@ final class CartViewController: UIViewController {
         tableView.rowHeight = 100
         tableView.backgroundColor = Colors().colorWhite
         tableView.separatorStyle = .none
+        
         view.addSubview(totalLabel)
         view.addSubview(orderButton)
-        orderButton.setTitle("SİPARİŞ VER", for: .normal)
+        view.addSubview(emptyLabel)
+        
+        orderButton.setTitle("place_order".localized, for: .normal)
+        orderButton.addTarget(self, action: #selector(placeOrderTapped), for: .touchUpInside)
+        
         totalLabel.font = UIFont.fontBold16
         totalLabel.textColor = Colors().colorRed
+        
+        // Layout
         orderButton.snp.makeConstraints {
             $0.height.equalTo(44)
             $0.width.equalToSuperview().multipliedBy(0.5)
@@ -68,14 +77,10 @@ final class CartViewController: UIViewController {
             $0.centerY.equalTo(orderButton.snp.centerY)
         }
         
-        orderButton.addTarget(self, action: #selector(placeOrderTapped), for: .touchUpInside)
-        
         tableView.snp.makeConstraints {
             $0.top.left.right.equalToSuperview()
             $0.bottom.equalTo(orderButton.snp.top).offset(-8)
         }
-        
-        view.addSubview(emptyLabel)
         
         emptyLabel.snp.makeConstraints {
             $0.center.equalToSuperview()
@@ -116,7 +121,7 @@ final class CartViewController: UIViewController {
     }
     
     private func updateTotal() {
-        totalLabel.text = "Toplam: \(viewModel.totalPrice) ₺"
+        totalLabel.text = String(format: "total_label".localized, "\(viewModel.totalPrice)")
     }
     
     @objc private func placeOrderTapped() {
@@ -138,13 +143,13 @@ final class CartViewController: UIViewController {
                     self.navigationController?.pushViewController(vc, animated: true)
                     self.tableView.reloadData()
                     self.updateTotal()
+                    NotificationCenter.default.post(name: .cartUpdated, object: nil)
                 } else {
-                    self.showAlert(title: "Hata", message: "Sipariş oluşturulamadı.")
+                    self.showAlert(title: "order_error_title".localized, message: "order_error_message".localized)
                 }
             }
         }
     }
-    
 }
 
 extension CartViewController: UITableViewDataSource {
@@ -172,6 +177,7 @@ extension CartViewController: UITableViewDataSource {
         cell.setBottomLineVisible(!isLast)
         return cell
     }
+    
     func tableView(_ tableView: UITableView, shouldHighlightRowAt indexPath: IndexPath) -> Bool {
         return false
     }

@@ -5,7 +5,6 @@
 //  Created by Semih Güler on 21.04.2025.
 //
 
-
 import UIKit
 import SnapKit
 import Kingfisher
@@ -53,7 +52,9 @@ final class OrderSummaryItemCell: UITableViewCell {
 
     func configure(with item: CartItem) {
         titleLabel.text = item.title
-        quantityLabel.text = "\(item.quantity) adet × \(String(format: "%.2f", item.price))₺"
+        let priceText = String(format: "%.2f", item.price)
+        quantityLabel.text = String(format: "order_summary_quantity_price".localized, item.quantity, priceText)
+
         let total = Double(item.quantity) * item.price
         totalLabel.text = "\(String(format: "%.2f", total))₺"
     }

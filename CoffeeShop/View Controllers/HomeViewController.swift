@@ -16,10 +16,10 @@ final class HomeViewController: UIViewController {
 
     private let campaignSliderView = CampaignsSliderView()
 
-    private lazy var hotCategoryView = makeCategorySectionView(with: "Sıcak İçecekler")
-    private lazy var coldCategoryView = makeCategorySectionView(with: "Soğuk İçecekler")
-    private lazy var foodCategoryView = makeCategorySectionView(with: "Yiyecekler")
-    
+    private lazy var hotCategoryView = makeCategorySectionView(with: "hot_drinks_title".localized)
+    private lazy var coldCategoryView = makeCategorySectionView(with: "cold_drinks_title".localized)
+    private lazy var foodCategoryView = makeCategorySectionView(with: "food_title".localized)
+
     private var favoriteProductView: TitledCollectionView<Favorite, ProductCell>!
 
     init(viewModel: HomeViewModelProtocol = HomeViewModel()) {
@@ -30,7 +30,7 @@ final class HomeViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
@@ -51,7 +51,6 @@ final class HomeViewController: UIViewController {
         setupUI()
         NotificationCenter.default.addObserver(self, selector: #selector(refreshFavorites), name: .favoritesUpdated, object: nil)
     }
-
 
     private func setupUI() {
         view.addSubview(scrollView)
@@ -114,10 +113,9 @@ final class HomeViewController: UIViewController {
         }
     }
 
-    
     private func setupFavoritesSection() {
         favoriteProductView = TitledCollectionView<Favorite, ProductCell>(
-            title: "Favori Ürünler",
+            title: "favorite_products_title".localized,
             cellType: ProductCell.self
         ) { [weak self] collectionView, indexPath, item in
             guard let self = self else { return ProductCell() }
@@ -164,10 +162,9 @@ final class HomeViewController: UIViewController {
         }
     }
 
-    
     @objc private func refreshFavorites() {
         guard viewModel.isUserLoggedIn else { return }
-        
+
         viewModel.fetchFavorites { [weak self] favorites in
             DispatchQueue.main.async {
                 self?.favoriteProductView.update(with: favorites)
@@ -175,7 +172,7 @@ final class HomeViewController: UIViewController {
             }
         }
     }
-    
+
     private func refreshCategorySections() {
         viewModel.fetchCategories { [weak self] categories in
             DispatchQueue.main.async {
@@ -185,14 +182,14 @@ final class HomeViewController: UIViewController {
             }
         }
     }
-    
+
     private func makeCategorySectionView(with title: String) -> TitledCollectionView<CoffeeShopItems, ProductCell> {
         let section = CategorySectionFactory.makeCategorySection(
             title: title,
             items: [],
             viewModel: viewModel,
             onLoginRequired: { [weak self] in
-                self?.showAlert(title: "Giriş Gerekli", message: "Favorilere eklemek için giriş yapmalısınız.")
+                self?.showAlert(title: "login_required_title".localized, message: "login_required_message".localized)
             },
             onFavoriteToggled: { [weak self] in
                 self?.refreshFavorites()
@@ -234,22 +231,6 @@ struct CategorySectionFactory {
                         case .success(_):
                             DispatchQueue.main.async {
                                 collectionView.reloadItems(at: [indexPath])
-                            }
-                        case .failure(let error):
-                            print("Hata: \(error.localizedDescription)")
-                        }
-                    }
-                }
-            }
-            cell.onFavoriteTapped = {
-                if !viewModel.isUserLoggedIn {
-                    onLoginRequired()
-                } else {
-                    viewModel.toggleFavorite(item) { result in
-                        switch result {
-                        case .success(_):
-                            DispatchQueue.main.async {
-                                collectionView.reloadItems(at: [indexPath])
                                 onFavoriteToggled?()
                             }
                         case .failure(let error):
@@ -262,4 +243,3 @@ struct CategorySectionFactory {
         }
     }
 }
-

@@ -56,7 +56,8 @@ final class OrderDetailItemCell: UITableViewCell {
 
     func configure(with item: CartItem) {
         titleLabel.text = item.title
-        quantityLabel.text = "\(item.quantity) adet x \(String(format: "%.2f", item.price))₺"
+        let unitPrice = String(format: "%.2f", item.price)
+        quantityLabel.text = String(format: "quantity_price_format".localized, item.quantity, unitPrice)
         let total = Double(item.quantity) * item.price
         priceLabel.text = "\(String(format: "%.2f", total))₺"
     }

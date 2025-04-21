@@ -8,6 +8,11 @@
 		<string>SourceSansPro-Bold.ttf</string>
 		<string>SourceSansPro-SemiBold.ttf</string>
 	</array>
+	<key>CFBundleLocalizations</key>
+	<array>
+		<string>tr</string>
+		<string>en</string>
+	</array>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
