@@ -54,7 +54,7 @@ final class ProductListViewModel: ProductListViewModelProtocol {
                 }
                 
                 return CoffeeShopItems(
-                    id: doc.documentID,
+                    productId: doc.documentID,
                     title: title,
                     type: type,
                     imageURL: imageUrl,
@@ -115,6 +115,6 @@ final class ProductListViewModel: ProductListViewModelProtocol {
     }
     
     func isFavorited(_ product: CoffeeShopItems) -> Bool {
-        return favoriteIds.contains(product.id)
+        return favoriteIds.contains(product.productId)
     }
 }

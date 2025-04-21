@@ -9,12 +9,12 @@ import Foundation
 import FirebaseFirestore
 
 struct Campaign: Codable {
-    let id: String
+    let productId: String
     let title: String
     let imageURL: String
 
     enum CodingKeys: String, CodingKey {
-        case id
+        case productId = "productId"
         case title
         case imageURL = "image_url"
     }

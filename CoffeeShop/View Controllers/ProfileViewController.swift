@@ -13,6 +13,24 @@ final class ProfileViewController: UIViewController {
     
     private let viewModel: ProfileViewModelProtocol
     
+    private let profileImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.image = UIImage(systemName: "person.crop.circle.fill")
+        imageView.tintColor = Colors().colorDarkGray
+        imageView.contentMode = .scaleAspectFit
+        imageView.layer.cornerRadius = 50
+        imageView.clipsToBounds = true
+        return imageView
+    }()
+    
+    private lazy var orderHistoryButton: CustomButton = {
+        let button = CustomButton {
+            self.showOrderHistory()
+        }
+        button.setTitle("Sipariş Geçmişi", for: .normal)
+        return button
+    }()
+    
     private let nameLabel: UILabel = {
         let label = UILabel()
         label.font = .fontBold22
@@ -73,13 +91,15 @@ final class ProfileViewController: UIViewController {
     
     private func setupUI() {
         view.addSubview(stackView)
+        stackView.addArrangedSubview(profileImageView)
         stackView.addArrangedSubview(nameLabel)
         stackView.addArrangedSubview(emailLabel)
+        stackView.addArrangedSubview(orderHistoryButton)
         stackView.addArrangedSubview(logoutButton)
         stackView.addArrangedSubview(deleteAccountButton)
         
         stackView.snp.makeConstraints { make in
-            make.center.equalToSuperview()
+            make.top.equalTo(view.safeAreaLayoutGuide).offset(16)
             make.left.right.equalToSuperview().inset(32)
         }
         
@@ -92,6 +112,20 @@ final class ProfileViewController: UIViewController {
             make.height.equalTo(44)
             make.width.equalToSuperview()
         }
+        
+        profileImageView.snp.makeConstraints { make in
+            make.width.height.equalTo(200)
+        }
+
+        orderHistoryButton.snp.makeConstraints { make in
+            make.height.equalTo(44)
+            make.width.equalToSuperview()
+        }
+    }
+    
+    private func showOrderHistory() {
+        let historyVC = OrderHistoryViewController()
+        navigationController?.pushViewController(historyVC, animated: true)
     }
     
     private func loadUserInfo() {

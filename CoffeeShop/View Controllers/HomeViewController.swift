@@ -63,7 +63,7 @@ final class HomeViewController: UIViewController {
         }
 
         stackView.addArrangedSubview(campaignSliderView)
-        campaignSliderView.snp.makeConstraints { $0.height.equalTo(230) }
+        campaignSliderView.snp.makeConstraints { $0.height.equalTo(250) }
         stackView.addArrangedSubview(hotCategoryView)
         stackView.addArrangedSubview(coldCategoryView)
         stackView.addArrangedSubview(foodCategoryView)
@@ -132,7 +132,7 @@ final class HomeViewController: UIViewController {
         favoriteProductView.onItemSelected = { [weak self] favoriteItem in
             guard let self = self else { return }
             let product = CoffeeShopItems(
-                id: favoriteItem.productId,
+                productId: favoriteItem.productId,
                 title: favoriteItem.title,
                 type: favoriteItem.type,
                 imageURL: favoriteItem.imageURL,

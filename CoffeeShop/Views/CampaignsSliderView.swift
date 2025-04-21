@@ -54,7 +54,7 @@ final class CampaignsSliderView: UIView {
         super.layoutSubviews()
 
         if let layout = collectionView.collectionViewLayout as? UICollectionViewFlowLayout {
-            layout.itemSize = CGSize(width: collectionView.bounds.width, height: 230)
+            layout.itemSize = CGSize(width: collectionView.bounds.width, height: 260)
             layout.invalidateLayout()
         }
     }
@@ -65,13 +65,13 @@ final class CampaignsSliderView: UIView {
 
         collectionView.snp.makeConstraints { make in
             make.top.left.right.equalToSuperview()
-            make.height.equalTo(230)
+            make.height.equalTo(260)
         }
 
         pageControl.snp.makeConstraints { make in
-            make.top.equalTo(collectionView.snp.bottom).offset(8)
+            make.bottom.equalToSuperview().inset(-8)
             make.centerX.equalToSuperview()
-            make.bottom.equalToSuperview()
+            make.height.equalTo(20)
         }
     }
 

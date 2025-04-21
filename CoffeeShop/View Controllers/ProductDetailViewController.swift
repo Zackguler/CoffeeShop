@@ -47,7 +47,7 @@ final class ProductDetailViewController: UIViewController {
         let button = CustomButton {
             self.addToCartTapped()
         }
-        button.setTitle("Sepette Ekle", for: .normal)
+        button.setTitle("Sepete Ekle", for: .normal)
         return button
     }()
 

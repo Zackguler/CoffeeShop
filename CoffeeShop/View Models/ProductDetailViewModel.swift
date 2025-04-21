@@ -40,7 +40,7 @@ final class ProductDetailViewModel: ProductDetailViewModelProtocol {
         guard !userId.isEmpty else { return }
         db.collection("users").document(userId)
             .collection("favorites")
-            .document(product.id)
+            .document(product.productId)
             .getDocument { snapshot, _ in
                 self.isFavorited = snapshot?.exists ?? false
             }
@@ -49,7 +49,7 @@ final class ProductDetailViewModel: ProductDetailViewModelProtocol {
     func toggleFavorite(completion: @escaping (Bool) -> Void) {
         guard !userId.isEmpty else { return }
         let ref = db.collection("users").document(userId)
-            .collection("favorites").document(product.id)
+            .collection("favorites").document(product.productId)
 
         if isFavorited {
             ref.delete { error in
@@ -61,7 +61,7 @@ final class ProductDetailViewModel: ProductDetailViewModelProtocol {
             }
         } else {
             let data: [String: Any] = [
-                "product_id": product.id,
+                "product_id": product.productId,
                 "title": product.title,
                 "image_url": product.imageURL,
                 "price": product.price,
@@ -88,7 +88,7 @@ final class ProductDetailViewModel: ProductDetailViewModelProtocol {
             return
         }
         
-        let cartRef = db.collection("users").document(userId).collection("cart").document(product.id)
+        let cartRef = db.collection("users").document(userId).collection("cart").document(product.productId)
         
         cartRef.getDocument { snapshot, error in
             var existingQuantity = 0
@@ -99,7 +99,7 @@ final class ProductDetailViewModel: ProductDetailViewModelProtocol {
             let newQuantity = existingQuantity + quantity
             
             let data: [String: Any] = [
-                "productId": self.product.id,
+                "productId": self.product.productId,
                 "title": self.product.title,
                 "image_url": self.product.imageURL,
                 "price": self.product.price,

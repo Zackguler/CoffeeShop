@@ -71,14 +71,14 @@ final class HomeViewModel: HomeViewModelProtocol {
             if let error = error {
                 completion(.failure(error))
             } else {
-                self.favoriteIDs.insert(product.id)
+                self.favoriteIDs.insert(product.productId)
                 completion(.success(()))
             }
         }
     }
 
     func isProductFavorited(_ product: CoffeeShopItems) -> Bool {
-        return favoriteIDs.contains(product.id)
+        return favoriteIDs.contains(product.productId)
     }
 
     func toggleFavorite(_ product: CoffeeShopItems, completion: @escaping (Result<Bool, Error>) -> Void) {
@@ -87,7 +87,7 @@ final class HomeViewModel: HomeViewModelProtocol {
             return
         }
 
-        let docRef = db.collection("users").document(userId).collection("favorites").document(product.id)
+        let docRef = db.collection("users").document(userId).collection("favorites").document(product.productId)
 
         docRef.getDocument { snapshot, error in
             if let error = error {
@@ -100,13 +100,13 @@ final class HomeViewModel: HomeViewModelProtocol {
                     if let err = err {
                         completion(.failure(err))
                     } else {
-                        self.favoriteIDs.remove(product.id)
+                        self.favoriteIDs.remove(product.productId)
                         completion(.success(false))
                     }
                 }
             } else {
                 let data: [String: Any] = [
-                    "product_id": product.id,
+                    "product_id": product.productId,
                     "title": product.title,
                     "price": product.price,
                     "image_url": product.imageURL,
@@ -118,7 +118,7 @@ final class HomeViewModel: HomeViewModelProtocol {
                     if let err = err {
                         completion(.failure(err))
                     } else {
-                        self.favoriteIDs.insert(product.id)
+                        self.favoriteIDs.insert(product.productId)
                         completion(.success(true))
                     }
                 }
