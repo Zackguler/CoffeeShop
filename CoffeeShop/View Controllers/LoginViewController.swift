@@ -118,9 +118,13 @@ final class LoginViewController: UIViewController {
             showAlert(title: "Hata", message: "Lütfen tüm alanları doldurunuz.")
             return
         }
-        
+
+        LoadingManager.shared.show(in: view)
+
         viewModel.login(email: email, password: password) { [weak self] result in
             DispatchQueue.main.async {
+                LoadingManager.shared.hide()
+
                 switch result {
                 case .success:
                     self?.onLoginSuccess?()
@@ -130,6 +134,7 @@ final class LoginViewController: UIViewController {
             }
         }
     }
+
     
     @objc private func goToRegister() {
         let registerVC = RegisterViewController()

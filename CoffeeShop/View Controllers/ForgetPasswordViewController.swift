@@ -87,9 +87,12 @@ final class ForgetPasswordViewController: UIViewController {
             showAlert(title: "Hata", message: "Lütfen e-posta adresinizi girin.")
             return
         }
-        
+
+        LoadingManager.shared.show(in: view)
+
         viewModel.sendReset(email: email) { [weak self] result in
             DispatchQueue.main.async {
+                LoadingManager.shared.hide()
                 switch result {
                 case .success:
                     self?.showAlert(title: "Başarılı", message: "Şifre sıfırlama e-postası gönderildi.")

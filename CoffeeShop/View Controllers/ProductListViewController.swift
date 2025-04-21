@@ -11,6 +11,8 @@ import SnapKit
 final class ProductListViewController: UIViewController {
 
     private let viewModel: ProductListViewModelProtocol
+    
+    private var debounceTimer: Timer?
 
     private let searchBarContainer: UIView = {
         let view = UIView()
@@ -90,6 +92,7 @@ final class ProductListViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         view.endEditing(true)
+        debounceTimer?.invalidate()
     }
 
     private func setupUI() {
@@ -109,8 +112,10 @@ final class ProductListViewController: UIViewController {
     }
 
     private func fetchData() {
+        LoadingManager.shared.show(in: view)
         viewModel.loadProducts { [weak self] in
             DispatchQueue.main.async {
+                LoadingManager.shared.hide()
                 self?.collectionView.reloadData()
             }
         }
@@ -123,10 +128,23 @@ final class ProductListViewController: UIViewController {
     }
 
     @objc private func searchTextChanged(_ textField: UITextField) {
+        debounceTimer?.invalidate()
         let searchText = textField.text?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
-        viewModel.searchProducts(by: searchText)
-        collectionView.reloadData()
+        LoadingManager.shared.show(in: view)
+        collectionView.isHidden = true
+
+        debounceTimer = Timer.scheduledTimer(withTimeInterval: 0.4, repeats: false) { [weak self] _ in
+            guard let self = self else { return }
+
+            self.viewModel.searchProducts(by: searchText)
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+                self.collectionView.isHidden = false
+                LoadingManager.shared.hide()
+            }
+        }
     }
+
     
     @objc private func dismissKeyboard() {
         view.endEditing(true)
@@ -168,8 +186,15 @@ extension ProductListViewController: UICollectionViewDataSource, UICollectionVie
 
 extension ProductListViewController: FilterViewControllerDelegate {
     func didApplyFilter(categories: [String], sortAscending: Bool?) {
+        LoadingManager.shared.show(in: view)
+        collectionView.isHidden = true
         viewModel.applyFilter(categories: categories, sortAscending: sortAscending)
-        collectionView.reloadData()
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+            guard let self = self else { return }
+            self.collectionView.reloadData()
+            self.collectionView.isHidden = false
+            LoadingManager.shared.hide()
+        }
     }
 }
 

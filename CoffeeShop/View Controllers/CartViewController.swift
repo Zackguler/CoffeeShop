@@ -84,6 +84,13 @@ final class CartViewController: UIViewController {
     }
     
     private func loadData() {
+        emptyLabel.isHidden = true
+        tableView.isHidden = true
+        orderButton.isHidden = true
+        totalLabel.isHidden = true
+        
+        LoadingManager.shared.show(in: view)
+        
         viewModel.loadCart {
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -94,6 +101,8 @@ final class CartViewController: UIViewController {
                 self.tableView.isHidden = isEmpty
                 self.orderButton.isHidden = isEmpty
                 self.totalLabel.isHidden = isEmpty
+                
+                LoadingManager.shared.hide()
             }
         }
     }
@@ -114,9 +123,9 @@ final class CartViewController: UIViewController {
         let orderId = UUID().uuidString.prefix(6).uppercased()
         let orderDate = Date()
         let orderedItems = viewModel.cartItems
-
+        
         viewModel.saveOrderToHistory(orderId: orderId, date: orderDate, items: orderedItems)
-
+        
         viewModel.placeOrder { success in
             DispatchQueue.main.async {
                 if success {
@@ -135,7 +144,7 @@ final class CartViewController: UIViewController {
             }
         }
     }
-
+    
 }
 
 extension CartViewController: UITableViewDataSource {
