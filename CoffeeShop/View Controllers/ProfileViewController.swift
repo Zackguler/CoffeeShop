@@ -129,32 +129,51 @@ final class ProfileViewController: UIViewController {
     }
     
     private func loadUserInfo() {
+        stackView.isHidden = true
+        LoadingManager.shared.show(in: view)
+
         viewModel.fetchUser { [weak self] user in
             DispatchQueue.main.async {
                 self?.nameLabel.text = "\(user.firstName) \(user.lastName)"
                 self?.emailLabel.text = user.email
+
+                self?.stackView.isHidden = false
+                LoadingManager.shared.hide()
             }
         }
     }
     
     private func logoutTapped() {
+        LoadingManager.shared.show(in: view)
         viewModel.logout { [weak self] error in
             DispatchQueue.main.async {
                 if let error = error {
                     self?.showAlert(title: "Hata", message: error.localizedDescription)
                 } else {
                     self?.goToLogin()
+                    LoadingManager.shared.hide()
                 }
             }
         }
     }
+
     
     private func deleteAccountTapped() {
-        let alert = UIAlertController(title: "Hesabı Sil", message: "Hesabınızı silmek istediğinize emin misiniz?", preferredStyle: .alert)
+        let alert = UIAlertController(
+            title: "Hesabı Sil",
+            message: "Hesabınızı silmek istediğinize emin misiniz?",
+            preferredStyle: .alert
+        )
+
         alert.addAction(UIAlertAction(title: "Vazgeç", style: .cancel))
+
         alert.addAction(UIAlertAction(title: "Evet", style: .destructive, handler: { _ in
+            LoadingManager.shared.show(in: self.view)
+
             self.viewModel.deleteAccount { [weak self] error in
                 DispatchQueue.main.async {
+                    LoadingManager.shared.hide()
+
                     if let error = error {
                         self?.showAlert(title: "Hata", message: error.localizedDescription)
                     } else {
@@ -163,8 +182,10 @@ final class ProfileViewController: UIViewController {
                 }
             }
         }))
+
         present(alert, animated: true)
     }
+
     
     private func goToLogin() {
         guard let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,

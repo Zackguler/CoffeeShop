@@ -11,7 +11,7 @@ import SnapKit
 final class HomeViewController: UIViewController {
 
     private let viewModel: HomeViewModelProtocol
-    private let scrollView = UIScrollView()
+    let scrollView = UIScrollView()
     private let stackView = UIStackView()
 
     private let campaignSliderView = CampaignsSliderView()
@@ -33,21 +33,25 @@ final class HomeViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
+
         if viewModel.isUserLoggedIn && !stackView.arrangedSubviews.contains(favoriteProductView) {
             stackView.addArrangedSubview(favoriteProductView)
         }
-        refreshFavorites()
         fetchData()
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = Colors().colorWhite
+
+        scrollView.isHidden = true
+        LoadingManager.shared.show(in: view)
+
         setupFavoritesSection()
         setupUI()
         NotificationCenter.default.addObserver(self, selector: #selector(refreshFavorites), name: .favoritesUpdated, object: nil)
     }
+
 
     private func setupUI() {
         view.addSubview(scrollView)
@@ -74,28 +78,42 @@ final class HomeViewController: UIViewController {
     }
 
     private func fetchData() {
+        let group = DispatchGroup()
+
+        group.enter()
         viewModel.fetchCampaigns { [weak self] campaigns in
             DispatchQueue.main.async {
                 self?.campaignSliderView.update(with: campaigns)
+                group.leave()
             }
         }
 
+        group.enter()
         viewModel.fetchCategories { [weak self] categories in
             DispatchQueue.main.async {
                 self?.hotCategoryView.update(with: categories.filter { $0.type == "hot" })
                 self?.coldCategoryView.update(with: categories.filter { $0.type == "cold" })
                 self?.foodCategoryView.update(with: categories.filter { $0.type == "food" })
+                group.leave()
             }
         }
 
         if viewModel.isUserLoggedIn {
+            group.enter()
             viewModel.fetchFavorites { [weak self] favorites in
                 DispatchQueue.main.async {
                     self?.favoriteProductView.update(with: favorites)
+                    group.leave()
                 }
             }
         }
+
+        group.notify(queue: .main) { [weak self] in
+            LoadingManager.shared.hide()
+            self?.scrollView.isHidden = false
+        }
     }
+
     
     private func setupFavoritesSection() {
         favoriteProductView = TitledCollectionView<Favorite, ProductCell>(
@@ -118,6 +136,7 @@ final class HomeViewController: UIViewController {
                         self.viewModel.fetchFavorites { updatedFavorites in
                             DispatchQueue.main.async {
                                 self.favoriteProductView.update(with: updatedFavorites)
+                                self.refreshCategorySections()
                             }
                         }
                     case .failure(let error):

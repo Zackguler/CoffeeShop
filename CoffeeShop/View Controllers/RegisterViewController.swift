@@ -140,12 +140,15 @@ final class RegisterViewController: UIViewController {
             showAlert(title: "Hata", message: "Lütfen tüm alanları doldurunuz")
             return
         }
-        
+
+        LoadingManager.shared.show(in: view)
+
         viewModel.register(firstName: firstName,
-                          lastName: lastName,
-                          email: email,
-                          password: password) { [weak self] result in
+                           lastName: lastName,
+                           email: email,
+                           password: password) { [weak self] result in
             DispatchQueue.main.async {
+                LoadingManager.shared.hide()
                 switch result {
                 case .success:
                     if let windowScene = UIApplication.shared.connectedScenes.first as? UIWindowScene,

@@ -71,7 +71,10 @@ final class ProductDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
+        contentView.isHidden = true
+        bottomBar.isHidden = true
         setupUI()
+        LoadingManager.shared.show(in: view)
         configure()
     }
 
@@ -150,6 +153,11 @@ final class ProductDetailViewController: UIViewController {
         updateFavoriteUI()
         viewModel.favoriteStatusChanged = { [weak self] _ in
             self?.updateFavoriteUI()
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
+            LoadingManager.shared.hide()
+            self?.contentView.isHidden = false
+            self?.bottomBar.isHidden = false
         }
     }
 
